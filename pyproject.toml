@@ -35,18 +35,15 @@ python = "^3.11"
 # FastAPI framework, high performance, easy to learn, fast to code, ready for production
 # https://fastapi.tiangolo.com/
 fastapi = "<1"
-# Tools For Sqlalchemy Used By Saritasa
-# https://github.com/saritasa-nest/saritasa-sqlalchemy-tools
-saritasa-sqlalchemy-tools = {git = "https://github.com/saritasa-nest/saritasa-sqlalchemy-tools.git", extras = ["auto_schema"], rev = "main", optional = true}
-# HTTPX is a fully featured HTTP client for Python 3, which provides sync and async APIs, and support for both HTTP/1.1 and HTTP/2.
-# https://www.python-httpx.org/
-httpx = {version ="^0.27.0", optional = true}
-
-[tool.poetry.extras]
-sqlalchemy = ["saritasa-sqlalchemy-tools"]
-testing = ["httpx"]
 
 [tool.poetry.group.dev.dependencies]
+# TODO: move it to optional once released
+# Tools For Sqlalchemy Used By Saritasa
+# https://github.com/saritasa-nest/saritasa-sqlalchemy-tools
+saritasa-sqlalchemy-tools = {git = "https://github.com/saritasa-nest/saritasa-sqlalchemy-tools.git", extras = ["auto_schema"], rev = "main"}
+# HTTPX is a fully featured HTTP client for Python 3, which provides sync and async APIs, and support for both HTTP/1.1 and HTTP/2.
+# https://www.python-httpx.org/
+httpx = {version ="^0.27.0"}
 # Improved REPL
 ipdb = "^0.13.13"
 ipython = "^8.22.2"

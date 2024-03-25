@@ -121,7 +121,7 @@ test = ["flake8 (>=6.1,<7.0)", "uvloop (>=0.15.3)"]
 name = "certifi"
 version = "2024.2.2"
 description = "Python package for providing Mozilla's CA Bundle."
-optional = true
+optional = false
 python-versions = ">=3.6"
 files = [
     {file = "certifi-2024.2.2-py3-none-any.whl", hash = "sha256:dc383c07b76109f368f6106eee2b593b04a011ea4d55f652c6ca24a754d1cdd1"},
@@ -360,7 +360,7 @@ test = ["objgraph", "psutil"]
 name = "h11"
 version = "0.14.0"
 description = "A pure-Python, bring-your-own-I/O implementation of HTTP/1.1"
-optional = true
+optional = false
 python-versions = ">=3.7"
 files = [
     {file = "h11-0.14.0-py3-none-any.whl", hash = "sha256:e3fe4ac4b851c468cc8363d500db52c2ead036020723024a109d37346efaa761"},
@@ -371,7 +371,7 @@ files = [
 name = "httpcore"
 version = "1.0.4"
 description = "A minimal low-level HTTP client."
-optional = true
+optional = false
 python-versions = ">=3.8"
 files = [
     {file = "httpcore-1.0.4-py3-none-any.whl", hash = "sha256:ac418c1db41bade2ad53ae2f3834a3a0f5ae76b56cf5aa497d2d033384fc7d73"},
@@ -392,7 +392,7 @@ trio = ["trio (>=0.22.0,<0.25.0)"]
 name = "httpx"
 version = "0.27.0"
 description = "The next generation HTTP client."
-optional = true
+optional = false
 python-versions = ">=3.8"
 files = [
     {file = "httpx-0.27.0-py3-none-any.whl", hash = "sha256:71d5465162c13681bff01ad59b2cc68dd838ea1f10e51574bac27103f00c91a5"},
@@ -1079,7 +1079,7 @@ env-settings = ["python-decouple (>=3,<4)"]
 name = "saritasa-sqlalchemy-tools"
 version = "0.1.0"
 description = "Tools for sqlalchemy used by saritasa"
-optional = true
+optional = false
 python-versions = "^3.11"
 files = []
 develop = false
@@ -1331,11 +1331,7 @@ files = [
     {file = "wcwidth-0.2.13.tar.gz", hash = "sha256:72ea0c06399eb286d978fdedb6923a9eb47e1c486ce63e9b4e64fc18303972b5"},
 ]
 
-[extras]
-sqlalchemy = ["saritasa-sqlalchemy-tools"]
-testing = ["httpx"]
-
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "ca1ba60b0e3994b17c218da96024f1e0459842736bddb199fe3d4a9bb3f83766"
+content-hash = "97fe551ad03a0b88cf601272ae1c78fe6d4c12bbbe5aef1e945313d579b1bf4c"
