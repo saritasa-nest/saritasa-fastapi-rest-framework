@@ -32,11 +32,24 @@ classifiers = [
 
 [tool.poetry.dependencies]
 python = "^3.11"
+# FastAPI framework, high performance, easy to learn, fast to code, ready for production
+# https://fastapi.tiangolo.com/
+fastapi = "<1"
+# Tools For Sqlalchemy Used By Saritasa
+# https://github.com/saritasa-nest/saritasa-sqlalchemy-tools
+saritasa-sqlalchemy-tools = {git = "https://github.com/saritasa-nest/saritasa-sqlalchemy-tools.git", extras = ["auto_schema"], rev = "main", optional = true}
+# HTTPX is a fully featured HTTP client for Python 3, which provides sync and async APIs, and support for both HTTP/1.1 and HTTP/2.
+# https://www.python-httpx.org/
+httpx = {version ="^0.27.0", optional = true}
+
+[tool.poetry.extras]
+sqlalchemy = ["saritasa-sqlalchemy-tools"]
+testing = ["httpx"]
 
 [tool.poetry.group.dev.dependencies]
 # Improved REPL
 ipdb = "^0.13.13"
-ipython = "^8.22.1"
+ipython = "^8.22.2"
 # A framework for managing and maintaining multi-language pre-commit hooks.
 # https://pre-commit.com/
 pre-commit = "^3.7.0"
@@ -145,6 +158,10 @@ ignore = [
   "D106",
   # https://docs.astral.sh/ruff/rules/D107
   "D107",
+  # https://docs.astral.sh/ruff/rules/ERA001
+  "ERA001",
+  # https://docs.astral.sh/ruff/rules/RUF018
+  "RUF018"
 ]
 [tool.ruff.lint.per-file-ignores]
 "__init__.py" = [
@@ -162,6 +179,10 @@ ignore = [
 "**/test_*" = [
   # https://docs.astral.sh/ruff/rules/ANN201
   "ANN201",
+]
+"**/testing.py*" = [
+  # https://docs.astral.sh/ruff/rules/S101
+  "S101",
 ]
 [tool.ruff.lint.isort]
 force-wrap-aliases = true
@@ -197,6 +218,12 @@ disallow_any_generics = true
 exclude = [
   "venv",
   ".venv",
+]
+disable_error_code = [
+  # Mypy demands that all typing as variable would have type of TypeAlias,
+  # but it's not allowed to be done as function argument, which we are using a
+  # lot in API
+  "valid-type",
 ]
 
 [[tool.mypy.overrides]]
