@@ -35,6 +35,14 @@ python = "^3.11"
 # FastAPI framework, high performance, easy to learn, fast to code, ready for production
 # https://fastapi.tiangolo.com/
 fastapi = "<1"
+# PyJWT is a Python library which allows you to encode and decode JSON Web
+# Tokens (JWT). JWT is an open, industry-standard (RFC 7519) for
+# representing claims securely between two parties.
+# https://pyjwt.readthedocs.io/en/stable/
+pyjwt = {extras = ["crypto"], version = "<3", optional = true}
+
+[tool.poetry.extras]
+jwt = ["pyjwt"]
 
 [tool.poetry.group.dev.dependencies]
 # TODO: move it to optional once released
@@ -76,10 +84,16 @@ pytest-sugar = "^1.0.0"
 # Coverage plugin for pytest.
 # https://github.com/pytest-dev/pytest-cov
 pytest-cov = "^5.0.0"
+# Allows you to use fixtures in @pytest.mark.parametrize.
+# https://pypi.org/project/pytest-lazy-fixtures/
+pytest-lazy-fixtures = "^1.0.7"
 # asyncpg is a database interface library designed specifically for PostgreSQL
 # and Python/asyncio.
 # https://magicstack.github.io/asyncpg/current/
 asyncpg = "^0.29.0"
+# Fast creating of model instances. May be used in tests
+# https://factoryboy.readthedocs.io/en/stable/
+factory-boy = "^3.3.0"
 
 [build-system]
 requires = ["poetry-core"]
@@ -233,7 +247,7 @@ disable_error_code = [
 [tool.pyright]
 ignore = [
   # Disabled for tests because of dynamic nature of pytest
-  "**/*test_*.py",
+  "**/test_*.py",
   "invocations/**"
 ]
 
@@ -252,6 +266,7 @@ addopts = [
 norecursedirs = [
     "venv",
     ".venv",
+    "example_app",
 ]
 asyncio_mode = "auto"
 
