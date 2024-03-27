@@ -34,6 +34,7 @@ class SqlAlchemySoftDeleteRepository(  # type: ignore[misc]
     saritasa_sqlalchemy_tools.BaseSoftDeleteRepository[
         saritasa_sqlalchemy_tools.BaseSoftDeleteModelT
     ],
+    SqlAlchemyRepository[saritasa_sqlalchemy_tools.BaseSoftDeleteModelT],
     repositories.ApiRepositoryProtocol[
         saritasa_sqlalchemy_tools.BaseSoftDeleteModelT,
         saritasa_sqlalchemy_tools.SelectStatement[

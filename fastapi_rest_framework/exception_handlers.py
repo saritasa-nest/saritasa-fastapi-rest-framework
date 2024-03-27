@@ -14,7 +14,7 @@ def _get_http_type(exc: fastapi.HTTPException) -> str:
             return "authorization"
         case http.HTTPStatus.FORBIDDEN:
             return "permission"
-    return "error"
+    return "error"  # pragma: no cover
 
 
 async def http_exception_handler(
@@ -62,7 +62,9 @@ async def validation_error_exception_handler(
     """Handle validation errors."""
     error_schema = exc.get_schema()
     if not isinstance(error_schema, list):
-        raise TypeError("Expected list of errors, got singular")
+        raise TypeError(  # pragma: no cover
+            "Expected list of errors, got singular",
+        )
 
     return fastapi.responses.JSONResponse(
         content=validators.GenericError(

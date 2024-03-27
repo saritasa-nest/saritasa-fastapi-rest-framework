@@ -80,7 +80,7 @@ class TestModelAPIView(
     """TestModel API."""
 
     router = fastapi.APIRouter(
-        prefix="/test_models",
+        prefix="/test-models",
         tags=["TestModels"],
     )
     repository_class = repositories.TestModelRepository
@@ -89,6 +89,9 @@ class TestModelAPIView(
         "default": (),
     }
     base_permissions = (security.AuthRequiredPermission[model](),)
+    permission_map = {  # noqa: RUF012
+        "default": (security.AllowPermission[model](),),
+    }
     validators_map = {  # noqa: RUF012
         "default": validators.TestModelValidator,
     }

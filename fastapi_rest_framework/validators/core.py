@@ -1,7 +1,9 @@
 import abc
+import collections.abc
 import enum
 import typing
 
+from .. import common_types
 from . import schemas, types
 
 
@@ -25,7 +27,7 @@ class BaseValidator(
     async def __call__(
         self,
         value: types.AnyGenericInput,
-        context: dict[str, typing.Any],
+        context: common_types.ContextType,
         loc: types.LOCType = ("body",),
     ) -> types.AnyGenericOutput | None:
         """Validate data."""
@@ -51,7 +53,7 @@ class BaseValidator(
         self,
         value: types.AnyGenericInput,
         loc: types.LOCType,
-        context: dict[str, typing.Any],
+        context: common_types.ContextType,
     ) -> types.AnyGenericOutput | None:
         """Validate data and raise ValidationError on fail."""
 
@@ -70,9 +72,13 @@ class ValidationError(Exception):
         self.all_errors: list[typing.Self] | None = all_errors
         self.loc: types.LOCType
         if self.all_errors and self.error_message:
-            raise ValueError("ValidationError can only have error or errors")
+            raise ValueError(  # pragma: no cover
+                "ValidationError can only have error or errors",
+            )
         if not self.all_errors and not self.error_message:
-            raise ValueError("ValidationError has not errors")
+            raise ValueError(  # pragma: no cover
+                "ValidationError has not errors",
+            )
 
     def get_schema(
         self,
@@ -92,4 +98,55 @@ class ValidationError(Exception):
                 else:
                     errors.append(error)
             return errors
-        raise ValueError("ValidationError has not errors")
+        raise ValueError("ValidationError has not errors")  # pragma: no cover
+
+
+class BaseListValidator(
+    BaseValidator[
+        collections.abc.Sequence[types.AnyGenericInput],
+        collections.abc.Sequence[types.AnyGenericOutput],
+    ],
+    typing.Generic[
+        types.AnyGenericInput,
+        types.AnyGenericOutput,
+    ],
+):
+    """Base list validator based on single instance validator."""
+
+    def __init__(
+        self,
+        instance_validator: BaseValidator[
+            types.AnyGenericInput,
+            types.AnyGenericOutput,
+        ],
+    ) -> None:
+        self.instance_validator = instance_validator
+
+    async def _validate(
+        self,
+        value: collections.abc.Sequence[types.AnyGenericInput],
+        loc: types.LOCType,
+        context: common_types.ContextType,
+    ) -> collections.abc.Sequence[types.AnyGenericOutput] | None:
+        """Validate sequence of api data."""
+        validated_data: list[types.AnyGenericOutput] = []
+        errors: list[ValidationError] = []
+        if value is None:
+            return value
+        for index, data in enumerate(value):
+            try:
+                validated_value = await self.instance_validator(
+                    value=data,
+                    loc=(*loc, index),
+                    context=context,
+                )
+                if validated_value:
+                    validated_data.append(validated_value)
+            except ValidationError as validation_error:
+                if validation_error.all_errors:
+                    errors += validation_error.all_errors
+                else:
+                    errors.append(validation_error)
+        if errors:
+            raise ValidationError(all_errors=errors)
+        return validated_data
