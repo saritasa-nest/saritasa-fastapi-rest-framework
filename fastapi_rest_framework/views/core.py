@@ -76,8 +76,8 @@ class BaseAPIViewMeta(type):
             "router_kwargs_map",
             {},
         )
-        if not obj_cls.data_interactor:  # type: ignore
-            obj_cls.data_interactor = interactors.ApiDataInteractor[  # type: ignore
+        if not obj_cls.interactor:  # type: ignore
+            obj_cls.interactor = interactors.ApiDataInteractor[  # type: ignore
                 typing.Any,
                 typing.Any,
                 obj_cls.repository_class,  # type: ignore
@@ -164,7 +164,7 @@ class BaseAPIViewMixin(
         ],
     ]
     # Interactors for each endpoint(usually create/update/delete)
-    data_interactor: type[
+    interactor: type[
         interactors.ApiDataInteractor[
             permissions.UserT,
             repositories.SelectStatementT,
@@ -195,12 +195,12 @@ class BaseAPIViewMixin(
         self,
     ) -> type[repositories.ApiRepositoryProtocolT]:
         """Prepare repository dependency."""
-        raise NotImplementedError
+        raise NotImplementedError  # pragma: no cover
 
     @property
     def user_dependency(self) -> type[permissions.UserT]:
         """Prepare security dependency."""
-        raise NotImplementedError
+        raise NotImplementedError  # pragma: no cover
 
     @property
     def context_dependency(
@@ -606,7 +606,7 @@ class BaseAPIView(
                     "instance",
                     "context",
                     "validator",
-                    "data_interactor",
+                    "interactor",
                     "joined_load",
                     "select_in_load",
                     "annotations",
@@ -670,7 +670,7 @@ class BaseAPIView(
                 validator=self.get_validator(
                     action=self.action,
                 ),
-                data_interactor=self.data_interactor,
+                interactor=self.interactor,
                 joined_load=self.get_joined_load_options(
                     action=self.action,
                 ),
@@ -752,7 +752,7 @@ class BaseAPIView(
                 validator=self.get_validator(
                     action=self.action,
                 ),
-                data_interactor=self.data_interactor,
+                interactor=self.interactor,
                 joined_load=self.get_joined_load_options(
                     action=self.action,
                 ),

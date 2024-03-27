@@ -56,7 +56,7 @@ class Filters(
         context: common_types.ContextType,
     ) -> repositories.WhereFilterT:
         """Prepare filter."""
-        raise NotImplementedError
+        raise NotImplementedError  # pragma: no cover
 
     async def to_filters(
         self,

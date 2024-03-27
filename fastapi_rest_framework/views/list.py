@@ -183,7 +183,7 @@ class ListMixin(
                 context=dict(context),
             ),
         )
-        return schemas.PaginatedResult(
+        return schemas.PaginatedResult[types.ListSchema](
             count=count,
             results=list(
                 map(

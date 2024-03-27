@@ -47,7 +47,7 @@ class DeleteMixin(
             user_dependency=self.user_dependency,
             repository_dependency=self.repository_dependency,
             context_dependency=self.context_dependency,
-            data_interactor=self.data_interactor,  # type: ignore
+            interactor=self.interactor,  # type: ignore
             permissions=self.get_permissions(
                 action=self.action,
             ),
@@ -59,7 +59,7 @@ class DeleteMixin(
         repository_dependency: type[repositories.ApiRepositoryProtocolT],
         user_dependency: type[permissions.UserT],
         context_dependency: type[types.Context],
-        data_interactor: type[
+        interactor: type[
             interactors.ApiDataInteractor[
                 permissions.UserT,
                 repositories.SelectStatementT,
@@ -103,7 +103,7 @@ class DeleteMixin(
                 user=user,
                 context=dict(context),
                 repository=repository,
-                data_interactor=data_interactor(
+                interactor=interactor(
                     repository=repository,
                     user=user,
                 ),
@@ -117,7 +117,7 @@ class DeleteMixin(
         user: permissions.UserT,
         context: common_types.ContextType,
         repository: repositories.ApiRepositoryProtocolT,
-        data_interactor: interactors.ApiDataInteractor[
+        interactor: interactors.ApiDataInteractor[
             permissions.UserT,
             repositories.SelectStatementT,
             repositories.ApiRepositoryProtocolT,
@@ -126,4 +126,4 @@ class DeleteMixin(
         instance: repositories.APIModelT,
     ) -> None:
         """Preform delete operation."""
-        await data_interactor.delete(instance=instance, context=context)
+        await interactor.delete(instance=instance, context=context)

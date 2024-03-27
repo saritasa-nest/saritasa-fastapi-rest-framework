@@ -1,5 +1,7 @@
 import typing
 
+import sqlalchemy
+
 import fastapi_rest_framework
 
 from . import models
@@ -39,6 +41,18 @@ class TestModelRepository(
         "created",
         "modified",
     )
+
+    @classmethod
+    def get_related_models_count_query(cls) -> sqlalchemy.ScalarSelect[int]:
+        """Get query for get_related_models_count_query."""
+        return (
+            sqlalchemy.select(sqlalchemy.func.count(models.RelatedModel.id))
+            .where(
+                models.RelatedModel.test_model_id == models.TestModel.id,
+            )
+            .correlate_except(models.RelatedModel)
+            .scalar_subquery()
+        )
 
 
 class SoftDeleteTestModelRepository(

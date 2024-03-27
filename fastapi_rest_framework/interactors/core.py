@@ -94,7 +94,7 @@ class M2MCreateUpdateConfig:
     link_field: str
     instance_m2m_relationship_field: str
     instance_m2m_relationship_pk_field: str
-    m2m_data_interactor_class: type["AnyApiDataInteractor"] | None = None
+    m2m_interactor_class: type["AnyApiDataInteractor"] | None = None
 
 
 class ApiDataInteractor(
@@ -125,14 +125,14 @@ class ApiDataInteractor(
 
     def init_other(
         self,
-        data_interactor_class: type["ApiDataInteractorT"],
+        interactor_class: type["ApiDataInteractorT"],
         repository_class: type[repositories.AnyApiRepositoryProtocol],
     ) -> "ApiDataInteractorT":
         """Init other data interactor from current."""
         other_repository = self.repository.init_other(
             repository_class=repository_class,
         )
-        return data_interactor_class(
+        return interactor_class(
             repository=other_repository,
             user=self.user,
         )
@@ -339,24 +339,24 @@ class ApiDataInteractor(
         """Update batch of objects into database."""
         await self.repository.update_batch(objects)
 
-    def _init_m2m_data_interactor(
+    def _init_m2m_interactor(
         self,
         m2m_config: M2MCreateUpdateConfig,
     ) -> "AnyApiDataInteractor":
         """Init data interactor for m2m operations."""
-        if m2m_config.m2m_data_interactor_class:
+        if m2m_config.m2m_interactor_class:
             return self.init_other(
-                data_interactor_class=m2m_config.m2m_data_interactor_class,
+                interactor_class=m2m_config.m2m_interactor_class,
                 repository_class=m2m_config.m2m_repository_class,
             )
         elif not m2m_config.m2m_repository_model:
             raise ValueError(
-                "m2m_repository_model or m2m_data_interactor_class"
+                "m2m_repository_model or m2m_interactor_class"
                 "must be specified in m2m config.",
             )
         else:
             return self.init_other(
-                data_interactor_class=ApiDataInteractor[
+                interactor_class=ApiDataInteractor[
                     permissions.UserT,
                     repositories.SelectStatementT,
                     m2m_config.m2m_repository_class,  # type: ignore
@@ -372,9 +372,9 @@ class ApiDataInteractor(
         link_values: list[str | int],
     ) -> repositories.APIModelT:
         """Create m2m connection for new instance."""
-        data_interactor = self._init_m2m_data_interactor(m2m_config=m2m_config)
+        interactor = self._init_m2m_interactor(m2m_config=m2m_config)
         # Create m2m links
-        await data_interactor.create_batch(
+        await interactor.create_batch(
             data=[
                 {
                     m2m_config.instance_m2m_field: getattr(
@@ -395,7 +395,7 @@ class ApiDataInteractor(
         link_values: list[str | int],
     ) -> repositories.APIModelT:
         """Update m2m connection for updated instance."""
-        data_interactor = self._init_m2m_data_interactor(m2m_config=m2m_config)
+        interactor = self._init_m2m_interactor(m2m_config=m2m_config)
         if not self.instance:
             raise ValueError("Instance is `None` in update action")
         ids_from_db = {
@@ -406,10 +406,10 @@ class ApiDataInteractor(
             )
         }
         # Delete m2m links that are not present in request
-        await data_interactor.repository.delete_batch(
+        await interactor.repository.delete_batch(
             where=[
                 getattr(
-                    data_interactor.repository.model,
+                    interactor.repository.model,
                     m2m_config.link_field,
                 ).in_(
                     ids_from_db - set(link_values),
@@ -423,7 +423,7 @@ class ApiDataInteractor(
             },
         )
         # Create m2m links that are not in db, but in requests
-        await data_interactor.create_batch(
+        await interactor.create_batch(
             data=[
                 {
                     m2m_config.instance_m2m_field: getattr(

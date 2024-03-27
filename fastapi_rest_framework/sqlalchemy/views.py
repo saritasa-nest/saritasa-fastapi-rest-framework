@@ -64,7 +64,7 @@ class SqlAlchemyView(
         self,
     ) -> type[saritasa_sqlalchemy_tools.Session]:
         """Prepare repository dependency."""
-        raise NotImplementedError
+        raise NotImplementedError  # pragma: no cover
 
     @property
     def repository_dependency(

@@ -1,5 +1,7 @@
 import fastapi
 import pydantic
+import saritasa_sqlalchemy_tools
+import sqlalchemy
 
 import fastapi_rest_framework
 
@@ -21,6 +23,25 @@ class Filters(core.Filters[repositories.TestModelRepository.model]):
     )
 
     search: str = pydantic.Field(fastapi.Query(""))
+    text__in: list[str] = pydantic.Field(fastapi.Query(()))
+    number__gte: int | None = pydantic.Field(fastapi.Query(None))
+    m2m_related_model_id__in: list[int] = pydantic.Field(fastapi.Query(()))
+    is_boolean_condition_true: bool = pydantic.Field(fastapi.Query(False))
+
+    def transform_is_boolean_condition_true(
+        self,
+        user: security.UserJWTData,
+        model: type[repositories.TestModelRepository.model],
+        value: bool,
+        context: fastapi_rest_framework.ContextType,
+    ) -> saritasa_sqlalchemy_tools.WhereFilter:
+        """Transform is_boolean filter."""
+        if value:
+            return model.boolean.is_(True)
+        return sqlalchemy.or_(
+            model.boolean.is_(True),
+            model.boolean.is_(False),
+        )
 
 
 class TestModelAPIView(
@@ -67,13 +88,70 @@ class TestModelAPIView(
     joined_load_map = {  # noqa: RUF012
         "default": (),
     }
-    permission_map = {  # noqa: RUF012
-        "default": (security.AuthRequiredPermission[model](),),
-    }
+    base_permissions = (security.AuthRequiredPermission[model](),)
     validators_map = {  # noqa: RUF012
         "default": validators.TestModelValidator,
     }
-    data_interactor = interactors.TestModelInteractor
+    annotations_map = {  # noqa: RUF012
+        "default": (
+            repositories.TestModelRepository.model.related_models_count,
+        ),
+        "detail": (
+            repositories.TestModelRepository.model.related_models_count,
+            (
+                repositories.TestModelRepository.model.related_models_count_query,
+                repositories.TestModelRepository.get_related_models_count_query(),
+            ),
+        ),
+        "create": (
+            repositories.TestModelRepository.model.related_models_count,
+            (
+                repositories.TestModelRepository.model.related_models_count_query,
+                repositories.TestModelRepository.get_related_models_count_query(),
+            ),
+        ),
+        "update": (
+            repositories.TestModelRepository.model.related_models_count,
+            (
+                repositories.TestModelRepository.model.related_models_count_query,
+                repositories.TestModelRepository.get_related_models_count_query(),
+            ),
+        ),
+        "delete": (),
+    }
+    select_in_load_map = {  # noqa: RUF012
+        "default": (repositories.TestModelRepository.model.related_model,),
+        "detail": (
+            repositories.TestModelRepository.model.related_model,
+            repositories.TestModelRepository.model.related_model_nullable,
+        ),
+        "create": (
+            repositories.TestModelRepository.model.related_model,
+            repositories.TestModelRepository.model.related_model_nullable,
+        ),
+        "update": (
+            repositories.TestModelRepository.model.related_model,
+            repositories.TestModelRepository.model.related_model_nullable,
+        ),
+        "delete": (),
+    }
+    joined_load_map = {  # noqa: RUF012
+        "default": (repositories.TestModelRepository.model.related_models,),
+        "detail": (
+            repositories.TestModelRepository.model.related_models,
+            repositories.TestModelRepository.model.m2m_related_models,
+        ),
+        "create": (
+            repositories.TestModelRepository.model.related_models,
+            repositories.TestModelRepository.model.m2m_related_models,
+        ),
+        "update": (
+            repositories.TestModelRepository.model.related_models,
+            repositories.TestModelRepository.model.m2m_related_models,
+        ),
+        "delete": (),
+    }
+    interactor = interactors.TestModelInteractor
     detail_schema = schemas.TestModelDetail
     list_schema = schemas.TestModelList
     filter = Filters
