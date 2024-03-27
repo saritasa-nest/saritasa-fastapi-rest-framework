@@ -143,6 +143,7 @@ def jwt_factory() -> collections.abc.Callable[[shortcuts.UserData], str]:
         return jwt.encode(
             payload={
                 "id": user.id,
+                "allow": user.allow,
                 "iat": datetime.datetime.now(datetime.UTC),
                 "exp": (
                     datetime.datetime.now(datetime.UTC)
@@ -213,7 +214,7 @@ async def api_client(
         yield client
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture
 def user_jwt_data() -> shortcuts.UserData:
     """Generate test JWT data for default user."""
     return factories.UserJWTDataFactory()  # type: ignore
@@ -228,4 +229,16 @@ def test_model_lazy_url(
         fastapi_rest_framework.testing.lazy_url,
         app=fastapi_app,
         view=example_app.views.TestModelAPIView,
+    )
+
+
+@pytest.fixture
+def soft_delete_test_model_lazy_url(
+    fastapi_app: fastapi.FastAPI,
+) -> fastapi_rest_framework.testing.LazyUrl:
+    """Generate shortcut to lazy urls."""
+    return functools.partial(
+        fastapi_rest_framework.testing.lazy_url,
+        app=fastapi_app,
+        view=example_app.views.SoftDeleteTestModelAPIView,
     )

@@ -45,7 +45,9 @@ class BaseAPIViewMeta(type):
             "model",
         ):
             if not hasattr(obj_cls, attr):
-                raise ValueError(f"Please set {attr} in {name}")
+                raise ValueError(  # pragma: no cover
+                    f"Please set {attr} in {name}",
+                )
         obj_cls.joined_load_map = getattr(  # type: ignore
             obj_cls,
             "joined_load_map",
@@ -76,13 +78,19 @@ class BaseAPIViewMeta(type):
             "router_kwargs_map",
             {},
         )
-        if not obj_cls.interactor:  # type: ignore
-            obj_cls.interactor = interactors.ApiDataInteractor[  # type: ignore
-                typing.Any,
-                typing.Any,
-                obj_cls.repository_class,  # type: ignore
-                obj_cls.model,  # type: ignore
-            ]
+        if not getattr(obj_cls, "interactor", None):
+
+            class DefaultInteractor(
+                interactors.ApiDataInteractor[  # type: ignore
+                    typing.Any,
+                    typing.Any,
+                    obj_cls.repository_class,  # type: ignore
+                    obj_cls.model,  # type: ignore
+                ],
+            ):
+                model = obj_cls.model  # type: ignore
+
+            obj_cls.interactor = DefaultInteractor  # type: ignore
         obj_cls.register_endpoints()
         return obj_cls
 
@@ -188,7 +196,7 @@ class BaseAPIViewMixin(
         return typing.Annotated[  # type: ignore
             str,
             fastapi.Path(),
-        ]
+        ]  # pragma: no cover
 
     @property
     def repository_dependency(
@@ -261,13 +269,16 @@ class BaseAPIViewMixin(
     ]:
         """Get validator for endpoint."""
         if action not in self.validators_map:
-            return self.validators_map.get(
-                "default",
+
+            class DefaultValidator(
                 validators.BaseModelValidator[
                     self.repository_class,  # type: ignore
                     self.model,  # type: ignore
                 ],
-            )
+            ):
+                model: type[repositories.APIModelT] = self.model
+
+            return self.validators_map.get("default", DefaultValidator)
         return self.validators_map[action]
 
     def get_responses(

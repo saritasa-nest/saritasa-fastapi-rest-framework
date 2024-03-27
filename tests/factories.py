@@ -14,6 +14,7 @@ class UserJWTDataFactory(factory.Factory):
         "pyint",
         min_value=1,
     )
+    allow = True
 
     class Meta:
         model = example_app.security.UserJWTData

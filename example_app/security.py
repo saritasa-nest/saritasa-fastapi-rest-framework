@@ -12,6 +12,7 @@ class UserJWTData(pydantic.BaseModel):
     """Representation of user data from JWT Token."""
 
     id: int = 0
+    allow: bool = False
     # https://datatracker.ietf.org/doc/html/rfc7519#section-4.1.6
     iat: datetime.datetime = datetime.datetime.min
     # https://datatracker.ietf.org/doc/html/rfc7519#section-4.1.4
@@ -71,3 +72,22 @@ class AuthRequiredPermission(
     ) -> None:
         if user.is_anonymous:
             raise fastapi_rest_framework.UnauthorizedException()
+
+
+class AllowPermission(
+    BasePermission[fastapi_rest_framework.PermissionInstanceT,],
+    typing.Generic[fastapi_rest_framework.PermissionInstanceT,],
+):
+    """Check that user is allowed."""
+
+    async def _check_permission(
+        self,
+        user: UserJWTData,
+        action: str,
+        context: fastapi_rest_framework.ContextType,
+        request_data: fastapi_rest_framework.RequestData,
+    ) -> None:
+        if not user.allow:
+            raise fastapi_rest_framework.PermissionException(
+                detail="User is not allowed",
+            )
