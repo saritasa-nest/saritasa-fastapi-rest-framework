@@ -57,7 +57,7 @@ class UpdateMixin(
         elif hasattr(self, "detail_schema"):
             update_detail_schema = self.detail_schema  # type: ignore
         else:
-            raise ValueError(
+            raise ValueError(  # pragma: no cover
                 (
                     "Please set `update_detail_schema` or `detail_schema`"
                     f"for {self.__class__}"
@@ -70,7 +70,7 @@ class UpdateMixin(
             user_dependency=self.user_dependency,
             repository_dependency=self.repository_dependency,
             context_dependency=self.context_dependency,
-            data_interactor=self.data_interactor,  # type: ignore
+            interactor=self.interactor,  # type: ignore
             annotations=self.get_annotations(
                 action=self.action,
             ),
@@ -96,7 +96,7 @@ class UpdateMixin(
         user_dependency: type[permissions.UserT],
         repository_dependency: type[repositories.ApiRepositoryProtocolT],
         context_dependency: type[types.Context],
-        data_interactor: type[
+        interactor: type[
             interactors.ApiDataInteractor[
                 permissions.UserT,
                 repositories.SelectStatementT,
@@ -167,7 +167,7 @@ class UpdateMixin(
                 context=context_dump,
                 schema=update_detail_schema,
                 repository=repository,
-                data_interactor=data_interactor(
+                interactor=interactor(
                     repository=repository,
                     user=user,
                     instance=instance,
@@ -185,7 +185,7 @@ class UpdateMixin(
         user: permissions.UserT,
         context: common_types.ContextType,
         repository: repositories.ApiRepositoryProtocolT,
-        data_interactor: interactors.ApiDataInteractor[
+        interactor: interactors.ApiDataInteractor[
             permissions.UserT,
             repositories.SelectStatementT,
             repositories.ApiRepositoryProtocolT,
@@ -200,8 +200,8 @@ class UpdateMixin(
         ] = (),
     ) -> types.DetailSchema:
         """Perform update operation."""
-        # Instance is reloaded from db inside of `data_interactor.save()`
-        instance = await data_interactor.save(
+        # Instance is reloaded from db inside of `interactor.save()`
+        instance = await interactor.save(
             data=validated_data,
             context=context,
             reload_fetch_statement=await self.prepare_fetch_statement(
@@ -212,6 +212,6 @@ class UpdateMixin(
                 annotations=annotations,
             ),
         )
-        if not instance:
+        if not instance:  # pragma: no cover
             raise exceptions.NotFoundException()
         return schema.model_validate(instance, context=context)

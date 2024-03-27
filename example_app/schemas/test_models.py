@@ -4,6 +4,20 @@ import saritasa_sqlalchemy_tools
 from .. import models
 
 
+class RelatedModelTestModelAutoSchema(
+    saritasa_sqlalchemy_tools.ModelAutoSchema,
+):
+    """Schema for related model in test model."""
+
+    class Meta:
+        model = models.RelatedModel
+        fields = (
+            "id",
+            "created",
+            "modified",
+        )
+
+
 class TestModelListAutoSchema(saritasa_sqlalchemy_tools.ModelAutoSchema):
     """List schema."""
 
@@ -42,6 +56,18 @@ class TestModelListAutoSchema(saritasa_sqlalchemy_tools.ModelAutoSchema):
             "custom_property_nullable",
             "json_field",
             "json_field_nullable",
+            (
+                "related_models_count",
+                int,
+            ),
+            (
+                "related_model",
+                RelatedModelTestModelAutoSchema,
+            ),
+            (
+                "related_models",
+                RelatedModelTestModelAutoSchema,
+            ),
         )
 
 
@@ -53,9 +79,6 @@ class TestModelDetailAutoSchema(saritasa_sqlalchemy_tools.ModelAutoSchema):
 
     class Meta:
         model = models.TestModel
-        model_config = pydantic.ConfigDict(
-            from_attributes=True,
-        )
         fields = (
             "id",
             "created",
@@ -86,6 +109,30 @@ class TestModelDetailAutoSchema(saritasa_sqlalchemy_tools.ModelAutoSchema):
             "custom_property_nullable",
             "json_field",
             "json_field_nullable",
+            (
+                "related_models_count",
+                int,
+            ),
+            (
+                "related_models_count_query",
+                int,
+            ),
+            (
+                "related_model",
+                RelatedModelTestModelAutoSchema,
+            ),
+            (
+                "related_model_nullable",
+                RelatedModelTestModelAutoSchema,
+            ),
+            (
+                "related_models",
+                RelatedModelTestModelAutoSchema,
+            ),
+            (
+                "m2m_related_models",
+                RelatedModelTestModelAutoSchema,
+            ),
         )
 
 
@@ -99,9 +146,6 @@ class TestModelCreateRequestAutoSchema(
 
     class Meta:
         model = models.TestModel
-        model_config = pydantic.ConfigDict(
-            from_attributes=True,
-        )
         fields = (
             "text",
             "text_nullable",
@@ -140,9 +184,6 @@ class TestModelUpdateRequestAutoSchema(
 
     class Meta:
         model = models.TestModel
-        model_config = pydantic.ConfigDict(
-            from_attributes=True,
-        )
         fields = (
             "text",
             "text_nullable",

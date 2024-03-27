@@ -57,7 +57,7 @@ class CreateMixin(
         elif hasattr(self, "detail_schema"):
             create_detail_schema = self.detail_schema  # type: ignore
         else:
-            raise ValueError(
+            raise ValueError(  # pragma: no cover
                 (
                     "Please set `create_detail_schema` or `detail_schema`"
                     f"for {self.__class__}"
@@ -69,7 +69,7 @@ class CreateMixin(
             user_dependency=self.user_dependency,
             repository_dependency=self.repository_dependency,
             context_dependency=self.context_dependency,
-            data_interactor=self.data_interactor,  # type: ignore
+            interactor=self.interactor,  # type: ignore
             annotations=self.get_annotations(
                 action=self.action,
             ),
@@ -94,7 +94,7 @@ class CreateMixin(
         user_dependency: type[permissions.UserT],
         repository_dependency: type[repositories.ApiRepositoryProtocolT],
         context_dependency: type[types.Context],
-        data_interactor: type[
+        interactor: type[
             interactors.ApiDataInteractor[
                 permissions.UserT,
                 repositories.SelectStatementT,
@@ -153,7 +153,7 @@ class CreateMixin(
                 context=context_dump,
                 schema=create_detail_schema,
                 repository=repository,
-                data_interactor=data_interactor(
+                interactor=interactor(
                     repository=repository,
                     user=user,
                 ),
@@ -170,7 +170,7 @@ class CreateMixin(
         user: permissions.UserT,
         context: common_types.ContextType,
         repository: repositories.ApiRepositoryProtocolT,
-        data_interactor: interactors.ApiDataInteractor[
+        interactor: interactors.ApiDataInteractor[
             permissions.UserT,
             repositories.SelectStatementT,
             repositories.ApiRepositoryProtocolT,
@@ -185,7 +185,7 @@ class CreateMixin(
         ] = (),
     ) -> types.DetailSchema:
         """Perform create operation."""
-        instance = await data_interactor.save(
+        instance = await interactor.save(
             data=validated_data,
             context=context,
             reload_fetch_statement=await self.prepare_fetch_statement(
@@ -196,6 +196,6 @@ class CreateMixin(
                 annotations=annotations,
             ),
         )
-        if not instance:
+        if not instance:  # pragma: no cover
             raise exceptions.NotFoundException()
         return schema.model_validate(instance, context=context)

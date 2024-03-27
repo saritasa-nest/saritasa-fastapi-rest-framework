@@ -54,7 +54,7 @@ class ApiRepositoryProtocol(  # type: ignore
         repository_class: type["ApiRepositoryProtocolT"],
     ) -> "ApiRepositoryProtocolT":
         """Init other repo from current."""
-        ...
+        ...  # pragma: no cover
 
     def expire(self, instance: APIModelT) -> None:
         """Expire instance."""
@@ -66,7 +66,7 @@ class ApiRepositoryProtocol(  # type: ignore
         attribute_names: collections.abc.Sequence[str] | None = None,
     ) -> APIModelT:
         """Save model instance."""
-        ...
+        ...  # pragma: no cover
 
     async def delete(self, instance: APIModelT) -> None:
         """Delete model instance."""
@@ -77,7 +77,7 @@ class ApiRepositoryProtocol(  # type: ignore
         exclude_fields: collections.abc.Sequence[str] = (),
     ) -> list[APIModelT]:
         """Create batch of objects."""
-        ...
+        ...  # pragma: no cover
 
     async def update_batch(
         self,
@@ -100,7 +100,7 @@ class ApiRepositoryProtocol(  # type: ignore
         **filters_by: typing.Any,
     ) -> SelectStatementT:
         """Prepare statement for fetching."""
-        ...
+        ...  # pragma: no cover
 
     async def fetch_all(
         self,
@@ -116,7 +116,7 @@ class ApiRepositoryProtocol(  # type: ignore
         **filters_by: typing.Any,
     ) -> collections.abc.Sequence[APIModelT]:
         """Fetch entries."""
-        ...
+        ...  # pragma: no cover
 
     async def fetch_first(
         self,
@@ -132,7 +132,7 @@ class ApiRepositoryProtocol(  # type: ignore
         **filters_by: typing.Any,
     ) -> APIModelT | None:
         """Fetch first matching entry."""
-        ...
+        ...  # pragma: no cover
 
     async def count(
         self,
@@ -140,7 +140,7 @@ class ApiRepositoryProtocol(  # type: ignore
         **filters_by: typing.Any,
     ) -> int:
         """Get count of entries."""
-        ...
+        ...  # pragma: no cover
 
     async def exists(
         self,
@@ -148,7 +148,7 @@ class ApiRepositoryProtocol(  # type: ignore
         **filters_by: typing.Any,
     ) -> bool:
         """Check existence of entries."""
-        ...
+        ...  # pragma: no cover
 
 
 AnyApiRepositoryProtocol = ApiRepositoryProtocol[
