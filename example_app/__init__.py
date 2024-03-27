@@ -15,6 +15,7 @@ router = fastapi.APIRouter(
     redirect_slashes=False,
 )
 router.include_router(views.TestModelAPIView.router)
+router.include_router(views.SoftDeleteTestModelAPIView.router)
 
 fastapi_app = fastapi.FastAPI(
     title="Test APP",

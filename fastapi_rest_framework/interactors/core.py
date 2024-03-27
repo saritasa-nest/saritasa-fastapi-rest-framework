@@ -350,7 +350,7 @@ class ApiDataInteractor(
                 repository_class=m2m_config.m2m_repository_class,
             )
         elif not m2m_config.m2m_repository_model:
-            raise ValueError(
+            raise ValueError(  # pragma: no cover
                 "m2m_repository_model or m2m_interactor_class"
                 "must be specified in m2m config.",
             )
@@ -397,7 +397,9 @@ class ApiDataInteractor(
         """Update m2m connection for updated instance."""
         interactor = self._init_m2m_interactor(m2m_config=m2m_config)
         if not self.instance:
-            raise ValueError("Instance is `None` in update action")
+            raise ValueError(  # pragma: no cover
+                "Instance is `None` in update action",
+            )
         ids_from_db = {
             getattr(supervisor, m2m_config.instance_m2m_relationship_pk_field)
             for supervisor in getattr(
