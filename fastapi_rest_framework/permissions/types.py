@@ -1,4 +1,6 @@
 import typing
 
-UserT = typing.TypeVar("UserT", bound=typing.Any)
+import pydantic
+
+UserT = typing.TypeVar("UserT", bound=pydantic.BaseModel)
 RequestData: typing.TypeAlias = dict[str, typing.Any] | None
