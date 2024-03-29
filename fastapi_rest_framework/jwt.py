@@ -14,6 +14,7 @@ class JWTTokenAuthentication(
     """Perform jwt token authentication."""
 
     jwt_public_key: str
+    jwt_private_key: str | None = None
     jwt_algorithms: tuple[str, ...]
     user_model: type[permissions.UserT]
 
@@ -59,3 +60,13 @@ class JWTTokenAuthentication(
     def on_user_auth(self, user: permissions.UserT) -> permissions.UserT:
         """Perform action on auth authentication."""
         return user
+
+    def generate_jwt_for_user(self, user: permissions.UserT) -> str:
+        """Generate JWT token for user."""
+        if not self.jwt_private_key:  # pragma: no cover
+            raise ValueError("JWT Private key is not set")
+        return jwt.encode(
+            payload=user.model_dump(mode="json"),
+            key=self.jwt_private_key,
+            algorithm=self.jwt_algorithms[0],
+        )

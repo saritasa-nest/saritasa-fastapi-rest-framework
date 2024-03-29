@@ -1,12 +1,10 @@
 import asyncio
 import collections.abc
-import datetime
 import functools
 import typing
 
 import fastapi
 import httpx
-import jwt
 import pytest
 import saritasa_sqlalchemy_tools
 import sqlalchemy
@@ -85,7 +83,11 @@ async def test_model(
     db_session: saritasa_sqlalchemy_tools.Session,
 ) -> example_app.models.TestModel:
     """Generate test_model instance."""
-    return await factories.TestModelFactory.create_async(session=db_session)
+    test_model = await factories.TestModelFactory.create_async(
+        session=db_session,
+    )
+    test_model.m2m_related_models_ids = []  # type: ignore
+    return test_model
 
 
 @pytest.fixture
@@ -140,19 +142,7 @@ def jwt_factory() -> collections.abc.Callable[[shortcuts.UserData], str]:
     """Get factory for generating jwt token."""
 
     def _get_jwt(user: shortcuts.UserData) -> str:
-        return jwt.encode(
-            payload={
-                "id": user.id,
-                "allow": user.allow,
-                "iat": datetime.datetime.now(datetime.UTC),
-                "exp": (
-                    datetime.datetime.now(datetime.UTC)
-                    + datetime.timedelta(days=100)
-                ),
-            },
-            key=example_app.security.jwt_private_key,
-            algorithm=example_app.security.JWTAuth.jwt_algorithms[0],
-        )
+        return example_app.security.JWTAuth.generate_jwt_for_user(user)
 
     return _get_jwt
 

@@ -20,6 +20,7 @@ class PaginationParams(
     offset: int = pydantic.Field(
         fastapi.Query(
             default=0,
+            gte=0,
         ),
     )
     limit: int
@@ -198,7 +199,7 @@ class ListMixin(
         ordering_fields: collections.abc.Sequence[str],
     ) -> type[enum.StrEnum]:
         """Prepare ordering enum."""
-        return enum.StrEnum(  # type: ignore
+        return enum.StrEnum(  # type: ignore # pragma: no cover
             "OrderingEnum",
             ordering_fields,
         )

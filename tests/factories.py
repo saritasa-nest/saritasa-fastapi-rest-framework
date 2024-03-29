@@ -1,3 +1,4 @@
+import datetime
 import typing
 
 import factory
@@ -15,6 +16,8 @@ class UserJWTDataFactory(factory.Factory):
         min_value=1,
     )
     allow = True
+    iat = datetime.datetime.now(datetime.UTC)
+    exp = iat + datetime.timedelta(days=100)
 
     class Meta:
         model = example_app.security.UserJWTData
@@ -27,6 +30,11 @@ class TestModelFactory(
 ):
     """Factory to generate TestModel."""
 
+    text_unique = factory.Faker(
+        "pystr",
+        min_chars=400,
+        max_chars=500,
+    )
     text = factory.Faker(
         "pystr",
         min_chars=1,
@@ -35,6 +43,7 @@ class TestModelFactory(
     text_enum = factory.fuzzy.FuzzyChoice(
         example_app.models.TestModel.TextEnum,
     )
+    timezone = factory.Faker("timezone")
     number = factory.Faker("pyint")
     small_number = factory.Faker("pyint")
     decimal_number = factory.Faker(
@@ -75,6 +84,11 @@ class SoftDeleteTestModelFactory(
 ):
     """Factory to generate SoftDeleteTestModel."""
 
+    text_unique = factory.Faker(
+        "pystr",
+        min_chars=400,
+        max_chars=500,
+    )
     text = factory.Faker(
         "pystr",
         min_chars=200,
@@ -83,6 +97,7 @@ class SoftDeleteTestModelFactory(
     text_enum = factory.fuzzy.FuzzyChoice(
         example_app.models.TestModel.TextEnum,
     )
+    timezone = factory.Faker("timezone")
     number = factory.Faker("pyint")
     small_number = factory.Faker("pyint")
     decimal_number = factory.Faker(

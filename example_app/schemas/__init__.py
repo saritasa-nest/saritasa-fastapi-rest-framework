@@ -4,6 +4,7 @@ from .soft_delete_test_model import (
     SoftDeleteTestUpdateModelDetail,
 )
 from .test_models import (
+    TestModelBulkCreateRequest,
     TestModelCreateRequest,
     TestModelDetail,
     TestModelList,

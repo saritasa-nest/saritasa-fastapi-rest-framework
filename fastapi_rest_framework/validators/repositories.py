@@ -1,3 +1,4 @@
+import collections.abc
 import typing
 
 from .. import common_types, repositories
@@ -5,40 +6,53 @@ from . import core, types
 
 
 class ObjectPKValidator(
-    core.BaseValidator[int, int],
+    core.BaseValidator[
+        int | collections.abc.Sequence[int],
+        int | collections.abc.Sequence[int],
+    ],
     typing.Generic[
         repositories.ApiRepositoryProtocolT,
         repositories.APIModelT,
     ],
 ):
-    """Check that id of object is present in database."""
+    """Check that ids of object is present in database."""
 
     def __init__(
         self,
         repository: repositories.ApiRepositoryProtocolT,
         human_name: str,
+        pk_attr: str = "id",
     ) -> None:
         super().__init__()
         self.repository = repository
-        self.human_name: str = human_name
-        self.instance: repositories.APIModelT
+        self.human_name = human_name
+        self.pk_attr = pk_attr
 
     async def _validate(
         self,
-        value: int | None,
+        value: int | collections.abc.Sequence[int] | None,
         loc: types.LOCType,
         context: common_types.ContextType,
-    ) -> int | None:
+    ) -> int | collections.abc.Sequence[int] | None:
         if value is None:
             return value
-        obj = await self.repository.fetch_first(id=value)
-        if not obj:
+
+        value_set = set(
+            value if isinstance(value, collections.abc.Iterable) else [value],
+        )
+        objs_count = await self.repository.count(
+            where=[
+                getattr(self.repository.model, self.pk_attr).in_(value_set),
+            ],
+        )
+        if objs_count < len(value_set):
             raise core.ValidationError(
                 error_type=core.ValidationErrorType.not_found,
                 error_message=f"{self.human_name.capitalize()} was not found",
             )
-        self.instance = obj
-        return value
+        if isinstance(value, collections.abc.Iterable):
+            return list(value_set)
+        return value_set.pop()
 
 
 class UniqueByFieldValidator(
@@ -78,7 +92,10 @@ class UniqueByFieldValidator(
             return value
         found_count = await self.repository.count(
             where=[
-                self.repository.model.pk_field
+                getattr(
+                    self.repository.model,
+                    self.repository.model.pk_field,
+                )
                 != getattr(
                     self.instance,
                     self.repository.model.pk_field,

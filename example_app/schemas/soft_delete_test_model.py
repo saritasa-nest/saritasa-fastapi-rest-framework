@@ -47,10 +47,12 @@ class SoftDeleteTestModelCreateUpdateRequestAutoSchema(
     class Meta:
         model = models.SoftDeleteTestModel
         fields = (
+            "text_unique",
             "text",
             "text_nullable",
             "text_enum",
             "text_enum_nullable",
+            "timezone",
             "number",
             "number_nullable",
             "small_number",

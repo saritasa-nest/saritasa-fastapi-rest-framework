@@ -1,3 +1,5 @@
+import http
+
 import fastapi
 import pydantic
 import saritasa_sqlalchemy_tools
@@ -91,9 +93,11 @@ class TestModelAPIView(
     base_permissions = (security.AuthRequiredPermission[model](),)
     permission_map = {  # noqa: RUF012
         "default": (security.AllowPermission[model](),),
+        "action": (security.AllowPermission[model](),),
     }
     validators_map = {  # noqa: RUF012
         "default": validators.TestModelValidator,
+        "action": validators.ListTestModelValidator,
     }
     annotations_map = {  # noqa: RUF012
         "default": (
@@ -162,3 +166,88 @@ class TestModelAPIView(
     create_schema = schemas.TestModelCreateRequest
     update_schema = schemas.TestModelUpdateRequest
     context = Context
+
+    @fastapi_rest_framework.action(paginated=True)
+    async def paginated_action(
+        self,
+        user: security.UserJWTData,
+        repository: repositories.TestModelRepository,
+        context: Context,
+        pagination_params: fastapi_rest_framework.PaginationParams[Filters],
+        annotations: saritasa_sqlalchemy_tools.AnnotationSequence,
+        joined_load: saritasa_sqlalchemy_tools.LazyLoadedSequence,
+        select_in_load: saritasa_sqlalchemy_tools.LazyLoadedSequence,
+        **kwargs,
+    ) -> fastapi_rest_framework.PaginatedResult[schemas.TestModelList]:
+        """Perform paginated action."""
+        return await self.perform_list(
+            user=user,
+            repository=repository,
+            context=context,
+            list_schema=schemas.TestModelList,
+            annotations=(*annotations,),
+            pagination_params=pagination_params,
+            joined_load=joined_load,
+            select_in_load=select_in_load,
+        )
+
+    @fastapi_rest_framework.action(
+        method=http.HTTPMethod.POST,
+        status_code=http.HTTPStatus.NO_CONTENT,
+    )
+    async def action(
+        self,
+        user: security.UserJWTData,
+        repository: repositories.TestModelRepository,
+        objects: list[schemas.TestModelBulkCreateRequest],
+        validator: type[validators.ListTestModelValidator],
+        interactor: type[interactors.TestModelInteractor],
+        context: Context,
+        **kwargs,
+    ) -> None:
+        """Recreate all instances."""
+        data = await validator(repository=repository)(
+            value=list(
+                map(
+                    schemas.TestModelCreateRequest.model_dump,
+                    objects,
+                ),
+            ),
+            context=dict(context),
+        )
+        if data is None:
+            return
+        await repository.delete_batch()
+        await interactor(
+            repository=repository,
+            user=user,
+        ).create_batch(
+            data=data,
+            context=dict(context),
+        )
+
+    @fastapi_rest_framework.action(
+        method=http.HTTPMethod.PUT,
+        detail=True,
+        status_code=http.HTTPStatus.NO_CONTENT,
+    )
+    async def action_detail(
+        self,
+        user: security.UserJWTData,
+        repository: repositories.TestModelRepository,
+        instance: repositories.TestModelRepository.model,
+        interactor: type[interactors.TestModelInteractor],
+        context: Context,
+        **kwargs,
+    ) -> None:
+        """Perform action."""
+        await interactor(
+            repository=repository,
+            user=user,
+            instance=instance,
+        ).save(
+            data={
+                "text_unique": "text_unique_action_detail",
+            },
+            context=dict(context),
+        )

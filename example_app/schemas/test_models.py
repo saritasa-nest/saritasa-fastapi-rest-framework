@@ -27,6 +27,7 @@ class TestModelListAutoSchema(saritasa_sqlalchemy_tools.ModelAutoSchema):
             from_attributes=True,
         )
         fields = (
+            "text_unique",
             "id",
             "created",
             "modified",
@@ -34,6 +35,7 @@ class TestModelListAutoSchema(saritasa_sqlalchemy_tools.ModelAutoSchema):
             "text_nullable",
             "text_enum",
             "text_enum_nullable",
+            "timezone",
             "number",
             "number_nullable",
             "small_number",
@@ -80,6 +82,7 @@ class TestModelDetailAutoSchema(saritasa_sqlalchemy_tools.ModelAutoSchema):
     class Meta:
         model = models.TestModel
         fields = (
+            "text_unique",
             "id",
             "created",
             "modified",
@@ -87,6 +90,7 @@ class TestModelDetailAutoSchema(saritasa_sqlalchemy_tools.ModelAutoSchema):
             "text_nullable",
             "text_enum",
             "text_enum_nullable",
+            "timezone",
             "number",
             "number_nullable",
             "small_number",
@@ -147,10 +151,53 @@ class TestModelCreateRequestAutoSchema(
     class Meta:
         model = models.TestModel
         fields = (
+            "text_unique",
             "text",
             "text_nullable",
             "text_enum",
             "text_enum_nullable",
+            "timezone",
+            "number",
+            "number_nullable",
+            "small_number",
+            "small_number_nullable",
+            "decimal_number",
+            "decimal_number_nullable",
+            "boolean",
+            "boolean_nullable",
+            "text_list",
+            "text_list_nullable",
+            "date_time",
+            "date_time_nullable",
+            "date",
+            "date_nullable",
+            "timedelta",
+            "timedelta_nullable",
+            "related_model_id",
+            "related_model_id_nullable",
+            "json_field",
+            "json_field_nullable",
+            ("m2m_related_models_ids", list[int]),
+        )
+
+
+TestModelCreateRequest = TestModelCreateRequestAutoSchema.get_schema()
+
+
+class TestModelBulkCreateRequestAutoSchema(
+    saritasa_sqlalchemy_tools.ModelAutoSchema,
+):
+    """Detail schema."""
+
+    class Meta:
+        model = models.TestModel
+        fields = (
+            "text_unique",
+            "text",
+            "text_nullable",
+            "text_enum",
+            "text_enum_nullable",
+            "timezone",
             "number",
             "number_nullable",
             "small_number",
@@ -174,7 +221,7 @@ class TestModelCreateRequestAutoSchema(
         )
 
 
-TestModelCreateRequest = TestModelCreateRequestAutoSchema.get_schema()
+TestModelBulkCreateRequest = TestModelBulkCreateRequestAutoSchema.get_schema()
 
 
 class TestModelUpdateRequestAutoSchema(
@@ -185,10 +232,12 @@ class TestModelUpdateRequestAutoSchema(
     class Meta:
         model = models.TestModel
         fields = (
+            "text_unique",
             "text",
             "text_nullable",
             "text_enum",
             "text_enum_nullable",
+            "timezone",
             "number",
             "number_nullable",
             "small_number",
@@ -209,6 +258,7 @@ class TestModelUpdateRequestAutoSchema(
             "related_model_id_nullable",
             "json_field",
             "json_field_nullable",
+            ("m2m_related_models_ids", list[int]),
         )
 
 

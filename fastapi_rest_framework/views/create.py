@@ -63,6 +63,14 @@ class CreateMixin(
                     f"for {self.__class__}"
                 ),
             )
+        validator = self.get_validator(action=self.action)
+        if issubclass(validator, validators.BaseModelListValidator):
+            raise ValueError(  # pragma: no cover
+                (
+                    "List validator is not supported in `update` action"
+                    f"for {self.__class__}"
+                ),
+            )
         return self.prepare_create(
             create_schema=self.create_schema,
             create_detail_schema=create_detail_schema,
@@ -73,9 +81,7 @@ class CreateMixin(
             annotations=self.get_annotations(
                 action=self.action,
             ),
-            validator=self.get_validator(
-                action=self.action,
-            ),
+            validator=validator,
             permissions=self.get_permissions(
                 action=self.action,
             ),
