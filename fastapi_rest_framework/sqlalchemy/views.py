@@ -57,7 +57,9 @@ class SqlAlchemyView(
                         le=32767,
                     ),
                 ]
-        raise ValueError(f"Can't generate query type for {self.pk_attr}")
+        raise ValueError(  # pragma: no cover
+            f"Can't generate query type for {self.pk_attr}",
+        )
 
     @property
     def db_session_dependency(

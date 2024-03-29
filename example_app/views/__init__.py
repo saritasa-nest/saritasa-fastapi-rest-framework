@@ -1,1 +1,2 @@
+from .soft_delete_test_model import SoftDeleteTestModelAPIView
 from .test_model import TestModelAPIView
