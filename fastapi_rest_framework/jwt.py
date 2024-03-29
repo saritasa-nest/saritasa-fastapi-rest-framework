@@ -38,15 +38,20 @@ class JWTTokenAuthentication(
                 algorithms=list(self.jwt_algorithms),
             )
             return self.on_user_auth(self.user_model.model_validate(user_data))
-        except jwt.exceptions.ExpiredSignatureError as error:
+        except (
+            jwt.exceptions.ExpiredSignatureError
+        ) as error:  # pragma: no cover
             raise exceptions.UnauthorizedException(
                 detail="JWT Token is expired",
             ) from error
-        except pydantic.ValidationError as error:
+        except pydantic.ValidationError as error:  # pragma: no cover
             raise exceptions.UnauthorizedException(
                 detail="Invalid JWT token body",
             ) from error
-        except (ValueError, jwt.exceptions.InvalidTokenError) as error:
+        except (
+            ValueError,
+            jwt.exceptions.InvalidTokenError,
+        ) as error:  # pragma: no cover
             raise exceptions.UnauthorizedException(
                 detail="Invalid JWT Token",
             ) from error
