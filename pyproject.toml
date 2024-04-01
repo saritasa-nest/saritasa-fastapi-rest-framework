@@ -54,7 +54,7 @@ saritasa-sqlalchemy-tools = {git = "https://github.com/saritasa-nest/saritasa-sq
 httpx = {version ="^0.27.0"}
 # Improved REPL
 ipdb = "^0.13.13"
-ipython = "^8.22.2"
+ipython = "^8.23.0"
 # A framework for managing and maintaining multi-language pre-commit hooks.
 # https://pre-commit.com/
 pre-commit = "^3.7.0"
