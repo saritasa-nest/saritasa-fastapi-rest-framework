@@ -2,7 +2,7 @@ import typing
 
 import saritasa_sqlalchemy_tools
 
-from .. import common_types, permissions, views
+from .. import common_types, metrics, permissions, views
 
 
 class SQLAlchemyFilters(
@@ -22,6 +22,7 @@ class SQLAlchemyFilters(
         saritasa_sqlalchemy_tools.transform_search_filter
     )
 
+    @metrics.tracker
     def transform_filter(
         self,
         user: permissions.UserT,

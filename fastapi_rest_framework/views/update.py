@@ -5,6 +5,7 @@ from .. import (
     common_types,
     exceptions,
     interactors,
+    metrics,
     permissions,
     repositories,
     validators,
@@ -96,6 +97,7 @@ class UpdateMixin(
             ),
         )
 
+    @metrics.tracker
     def prepare_update(
         self,
         pk_query: type[str] | type[int],

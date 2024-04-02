@@ -1,7 +1,7 @@
 import collections.abc
 import typing
 
-from .. import common_types, repositories
+from .. import common_types, metrics, repositories
 from . import core, types
 
 
@@ -28,6 +28,7 @@ class ObjectPKValidator(
         self.human_name = human_name
         self.pk_attr = pk_attr
 
+    @metrics.tracker
     async def _validate(
         self,
         value: int | collections.abc.Sequence[int] | None,
@@ -82,6 +83,7 @@ class UniqueByFieldValidator(
         self.human_name = human_name
         self.instance = instance
 
+    @metrics.tracker
     async def _validate(
         self,
         value: types.AnyGenericInput | None,

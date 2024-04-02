@@ -5,7 +5,7 @@ import typing
 import fastapi
 import pydantic
 
-from .. import permissions, repositories
+from .. import metrics, permissions, repositories
 from . import core, filters, schemas, types
 
 
@@ -155,6 +155,7 @@ class ListMixin(
 
         return _list
 
+    @metrics.tracker
     async def perform_list(
         self,
         user: permissions.UserT,
@@ -194,6 +195,7 @@ class ListMixin(
             ),
         )
 
+    @metrics.tracker
     def get_ordering_enum(
         self,
         ordering_fields: collections.abc.Sequence[str],
@@ -204,6 +206,7 @@ class ListMixin(
             ordering_fields,
         )
 
+    @metrics.tracker
     def prepare_pagination_params(
         self,
         ordering_enum: type[enum.StrEnum],
@@ -230,6 +233,7 @@ class ListMixin(
 
         return GeneratedPaginationParams
 
+    @metrics.tracker
     def get_pagination_dependency(
         self,
         ordering_enum: type[enum.StrEnum],

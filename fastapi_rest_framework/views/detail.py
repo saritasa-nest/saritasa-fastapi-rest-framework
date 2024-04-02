@@ -1,7 +1,7 @@
 import collections.abc
 import typing
 
-from .. import exceptions, permissions, repositories
+from .. import exceptions, metrics, permissions, repositories
 from . import core, types
 
 
@@ -123,6 +123,7 @@ class DetailMixin(
 
         return detail
 
+    @metrics.tracker
     async def perform_detail(
         self,
         user: permissions.UserT,
