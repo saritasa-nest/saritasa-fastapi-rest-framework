@@ -2,7 +2,7 @@ import collections.abc
 import dataclasses
 import typing
 
-from .. import common_types, permissions, repositories, validators
+from .. import common_types, metrics, permissions, repositories, validators
 
 
 class BaseHooksMixin(typing.Generic[repositories.APIModelT]):
@@ -123,6 +123,7 @@ class ApiDataInteractor(
         self.instance = instance
         self.user = user
 
+    @metrics.tracker
     def init_other(
         self,
         interactor_class: type["ApiDataInteractorT"],
@@ -137,6 +138,7 @@ class ApiDataInteractor(
             user=self.user,
         )
 
+    @metrics.tracker
     def _prepare_instance_from_api(
         self,
         data: validators.ApiDataType,
@@ -163,6 +165,7 @@ class ApiDataInteractor(
         """Perform extra logic before updating object."""
         return instance
 
+    @metrics.tracker
     async def _reload_instance(
         self,
         instance: repositories.APIModelT,
@@ -178,6 +181,7 @@ class ApiDataInteractor(
             **pk_field_to_value,
         )
 
+    @metrics.tracker
     async def save(
         self,
         data: validators.ApiDataType,
@@ -220,6 +224,7 @@ class ApiDataInteractor(
             )
         return reloaded_instance
 
+    @metrics.tracker
     async def create(
         self,
         data: validators.ApiDataType,
@@ -252,6 +257,7 @@ class ApiDataInteractor(
             )
         return instance
 
+    @metrics.tracker
     async def update(
         self,
         data: validators.ApiDataType,
@@ -284,6 +290,7 @@ class ApiDataInteractor(
             )
         return instance
 
+    @metrics.tracker
     async def delete(
         self,
         instance: repositories.APIModelT,
@@ -300,6 +307,7 @@ class ApiDataInteractor(
             context=context,
         )
 
+    @metrics.tracker
     async def create_batch(
         self,
         data: collections.abc.Sequence[validators.ApiDataType],
@@ -310,6 +318,7 @@ class ApiDataInteractor(
             objects=tuple(map(self._prepare_instance_from_api, data)),
         )
 
+    @metrics.tracker
     async def update_batch(
         self,
         data: collections.abc.Sequence[validators.ApiDataType],
@@ -320,6 +329,7 @@ class ApiDataInteractor(
             objects=tuple(map(self._prepare_instance_from_api, data)),
         )
 
+    @metrics.tracker
     async def _save_object_in_db(
         self,
         instance: repositories.APIModelT,
@@ -329,6 +339,7 @@ class ApiDataInteractor(
         await self.repository.save(instance=instance, refresh=refresh)
         return instance
 
+    @metrics.tracker
     async def _create_batch_in_db(
         self,
         objects: collections.abc.Sequence[repositories.APIModelT],
@@ -336,6 +347,7 @@ class ApiDataInteractor(
         """Create batch of objects into database."""
         return await self.repository.insert_batch(objects=objects)
 
+    @metrics.tracker
     async def _update_batch_in_db(
         self,
         objects: collections.abc.Sequence[repositories.APIModelT],
@@ -343,6 +355,7 @@ class ApiDataInteractor(
         """Update batch of objects into database."""
         await self.repository.update_batch(objects)
 
+    @metrics.tracker
     def _init_m2m_interactor(
         self,
         m2m_config: M2MCreateUpdateConfig,
@@ -369,6 +382,7 @@ class ApiDataInteractor(
                 repository_class=m2m_config.m2m_repository_class,
             )
 
+    @metrics.tracker
     async def create_m2m(
         self,
         instance: repositories.APIModelT,
@@ -394,6 +408,7 @@ class ApiDataInteractor(
         )
         return instance
 
+    @metrics.tracker
     async def update_m2m(
         self,
         instance: repositories.APIModelT,

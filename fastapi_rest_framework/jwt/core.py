@@ -4,7 +4,7 @@ import fastapi.security
 import jwt
 import pydantic
 
-from . import exceptions, permissions
+from .. import exceptions, metrics, permissions
 
 
 class JWTTokenAuthentication(
@@ -22,6 +22,7 @@ class JWTTokenAuthentication(
         """Create hash for fastapi deps."""
         return hash((type(self), *tuple(self.__dict__.values())))
 
+    @metrics.tracker
     def __call__(
         self,
         token: typing.Annotated[
@@ -57,10 +58,12 @@ class JWTTokenAuthentication(
                 detail="Invalid JWT Token",
             ) from error
 
+    @metrics.tracker
     def on_user_auth(self, user: permissions.UserT) -> permissions.UserT:
         """Perform action on auth authentication."""
         return user
 
+    @metrics.tracker
     def generate_jwt_for_user(self, user: permissions.UserT) -> str:
         """Generate JWT token for user."""
         if not self.jwt_private_key:  # pragma: no cover

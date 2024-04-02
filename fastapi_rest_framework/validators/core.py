@@ -3,7 +3,7 @@ import collections.abc
 import enum
 import typing
 
-from .. import common_types
+from .. import common_types, metrics
 from . import schemas, types
 
 
@@ -24,6 +24,7 @@ class BaseValidator(
 ):
     """Base class for validations."""
 
+    @metrics.tracker
     async def __call__(
         self,
         value: types.AnyGenericInput,
@@ -80,6 +81,7 @@ class ValidationError(Exception):
                 "ValidationError has not errors",
             )
 
+    @metrics.tracker
     def get_schema(
         self,
     ) -> schemas.ValidationErrorSchema | list[schemas.ValidationErrorSchema]:
@@ -122,6 +124,7 @@ class BaseListValidator(
     ) -> None:
         self.instance_validator = instance_validator
 
+    @metrics.tracker
     async def _validate(
         self,
         value: collections.abc.Sequence[types.AnyGenericInput],

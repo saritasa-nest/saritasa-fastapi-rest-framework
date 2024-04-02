@@ -40,9 +40,14 @@ fastapi = "<1"
 # representing claims securely between two parties.
 # https://pyjwt.readthedocs.io/en/stable/
 pyjwt = {extras = ["crypto"], version = "<3", optional = true}
+# Python client for Sentry (https://sentry.io)
+# https://pypi.org/project/sentry-sdk/
+sentry-sdk = {version = "<2", optional = true}
 
 [tool.poetry.extras]
+all = ["pyjwt", "sentry-sdk"]
 jwt = ["pyjwt"]
+sentry = ["sentry-sdk"]
 
 [tool.poetry.group.dev.dependencies]
 # TODO: move it to optional once released

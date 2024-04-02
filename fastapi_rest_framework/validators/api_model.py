@@ -5,7 +5,7 @@ import enum
 import operator
 import typing
 
-from .. import common_types, repositories
+from .. import common_types, metrics, repositories
 from . import core, types
 
 UniqueConstraintType: typing.TypeAlias = tuple[str, ...]
@@ -80,6 +80,7 @@ class BaseModelValidator(
         """Get unique constraints for model."""
         return []
 
+    @metrics.tracker
     async def _validate_unique_constraints(
         self,
         data: types.ApiDataType,
@@ -129,6 +130,7 @@ class BaseModelValidator(
                 )
         return data
 
+    @metrics.tracker
     async def _validate(
         self,
         value: types.ApiDataType,
@@ -160,6 +162,7 @@ class BaseModelValidator(
             context=context,
         )
 
+    @metrics.tracker
     async def validate_body(
         self,
         value: types.ApiDataType,
@@ -168,6 +171,7 @@ class BaseModelValidator(
         """Perform validation against whole input data(body)."""
         return value
 
+    @metrics.tracker
     async def _validate_data(
         self,
         data: types.ApiDataType,
@@ -224,6 +228,7 @@ class BaseModelListValidator(
         self.instance_validator = instance_validator
 
     @abc.abstractmethod
+    @metrics.tracker
     async def _validate(
         self,
         value: collections.abc.Sequence[types.ApiDataType],

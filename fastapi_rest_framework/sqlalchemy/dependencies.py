@@ -4,6 +4,8 @@ import typing
 import fastapi
 import saritasa_sqlalchemy_tools
 
+from .. import metrics
+
 
 def get_repository(
     repository_class: type[
@@ -20,6 +22,7 @@ def get_repository(
 ]:
     """Get dependency injection for db repository."""
 
+    @metrics.tracker
     def _get_repository(
         session: typing.Annotated[
             saritasa_sqlalchemy_tools.Session,

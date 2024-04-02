@@ -5,6 +5,7 @@ from .. import (
     common_types,
     exceptions,
     interactors,
+    metrics,
     permissions,
     repositories,
     validators,
@@ -171,6 +172,7 @@ class CreateMixin(
 
         return create
 
+    @metrics.tracker
     async def perform_create(
         self,
         user: permissions.UserT,

@@ -1,6 +1,6 @@
 import typing
 
-from .. import common_types
+from .. import common_types, metrics
 from . import types
 
 PermissionInstanceT = typing.TypeVar("PermissionInstanceT", bound=typing.Any)
@@ -14,6 +14,7 @@ class BasePermission(
 ):
     """Base implementation of permissions."""
 
+    @metrics.tracker
     async def __call__(
         self,
         user: types.UserT,

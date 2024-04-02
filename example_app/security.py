@@ -35,7 +35,7 @@ class UserJWTData(pydantic.BaseModel):
 
 
 class JWTAuthClass(
-    fastapi_rest_framework.jwt.JWTTokenAuthentication[UserJWTData],
+    fastapi_rest_framework.jwt.SentryJWTTokenAuthentication[UserJWTData],
 ):
     """Auth class."""
 

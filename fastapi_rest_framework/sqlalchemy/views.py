@@ -6,7 +6,7 @@ import fastapi
 import saritasa_sqlalchemy_tools
 import sqlalchemy
 
-from .. import permissions, views
+from .. import metrics, permissions, views
 from . import dependencies, repositories
 
 
@@ -111,6 +111,7 @@ class ListMixin(
 ):
     """List mixin for sqlalchemy."""
 
+    @metrics.tracker
     def get_ordering_enum(
         self,
         ordering_fields: collections.abc.Sequence[str],

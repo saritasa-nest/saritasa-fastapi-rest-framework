@@ -3,7 +3,7 @@ import typing
 
 import pydantic
 
-from .. import common_types, permissions, repositories
+from .. import common_types, metrics, permissions, repositories
 
 
 class Filters(
@@ -33,6 +33,7 @@ class Filters(
         repositories.WhereFilterT,
     ]
 
+    @metrics.tracker
     def transform_search(
         self,
         user: permissions.UserT,
@@ -47,6 +48,7 @@ class Filters(
             value,
         )
 
+    @metrics.tracker
     def transform_filter(
         self,
         user: permissions.UserT,
@@ -58,6 +60,7 @@ class Filters(
         """Prepare filter."""
         raise NotImplementedError  # pragma: no cover
 
+    @metrics.tracker
     async def to_filters(
         self,
         user: permissions.UserT,

@@ -5,6 +5,7 @@ from .. import (
     common_types,
     exceptions,
     interactors,
+    metrics,
     permissions,
     repositories,
 )
@@ -112,6 +113,7 @@ class DeleteMixin(
 
         return delete
 
+    @metrics.tracker
     async def perform_delete(
         self,
         user: permissions.UserT,

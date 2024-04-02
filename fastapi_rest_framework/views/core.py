@@ -9,6 +9,7 @@ import pydantic
 from .. import (
     common_types,
     interactors,
+    metrics,
     permissions,
     repositories,
     validators,
@@ -284,6 +285,7 @@ class BaseAPIViewMixin(
             fastapi.Depends(),
         ]
 
+    @metrics.tracker
     def get_select_in_load_options(
         self,
         action: str = "default",
@@ -293,6 +295,7 @@ class BaseAPIViewMixin(
             return self.select_in_load_map.get("default", ())
         return self.select_in_load_map[action]
 
+    @metrics.tracker
     def get_joined_load_options(
         self,
         action: str = "default",
@@ -302,6 +305,7 @@ class BaseAPIViewMixin(
             return self.joined_load_map.get("default", ())
         return self.joined_load_map[action]
 
+    @metrics.tracker
     def get_annotations(
         self,
         action: str = "default",
@@ -311,6 +315,7 @@ class BaseAPIViewMixin(
             return self.annotations_map.get("default", ())
         return self.annotations_map[action]
 
+    @metrics.tracker
     def get_permissions(
         self,
         action: str = "default",
@@ -322,6 +327,7 @@ class BaseAPIViewMixin(
             return self.permission_map.get("default", ())
         return self.permission_map[action]
 
+    @metrics.tracker
     def get_validator(
         self,
         action: str = "default",
@@ -349,6 +355,7 @@ class BaseAPIViewMixin(
             return self.validators_map.get("default", DefaultValidator)
         return self.validators_map[action]
 
+    @metrics.tracker
     def get_responses(
         self,
         action: str = "default",
@@ -358,6 +365,7 @@ class BaseAPIViewMixin(
             return self.responses_map.get("default", {})
         return self.responses_map[action]
 
+    @metrics.tracker
     async def get_filters_values(
         self,
         user: permissions.UserT,
@@ -374,6 +382,7 @@ class BaseAPIViewMixin(
             filters_by[self.pk_attr] = pk_value
         return where, filters_by
 
+    @metrics.tracker
     async def prepare_fetch_statement(
         self,
         user: permissions.UserT,
@@ -410,6 +419,7 @@ class BaseAPIViewMixin(
             **filters_by,
         )
 
+    @metrics.tracker
     async def get_object(
         self,
         pk: int | str | None,
@@ -433,6 +443,7 @@ class BaseAPIViewMixin(
             ),
         )
 
+    @metrics.tracker
     async def paginate_data(
         self,
         user: permissions.UserT,
@@ -479,6 +490,7 @@ class BaseAPIViewMixin(
         )
         return objects, count
 
+    @metrics.tracker
     async def check_permissions(
         self,
         user: permissions.UserT,
@@ -510,6 +522,7 @@ class BaseAPIViewMixin(
                 request_data=request_data,
             )
 
+    @metrics.tracker
     async def validate_data(
         self,
         context: common_types.ContextType,

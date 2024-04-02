@@ -4,6 +4,7 @@ import re
 import typing
 import zoneinfo
 
+from .. import metrics
 from . import core, types
 
 
@@ -15,6 +16,7 @@ class DatetimeValidator(
 ):
     """Validate datetime."""
 
+    @metrics.tracker
     async def _validate(
         self,
         value: datetime.datetime | None,
@@ -39,6 +41,7 @@ class RegexValidator(core.BaseValidator[str, str]):
         self.pattern: str = pattern
         self.human_error: str = human_error
 
+    @metrics.tracker
     async def _validate(
         self,
         value: str | None,
@@ -58,6 +61,7 @@ class RegexValidator(core.BaseValidator[str, str]):
 class TimeZoneValidator(core.BaseValidator[str, str]):
     """Validate timezone."""
 
+    @metrics.tracker
     async def _validate(
         self,
         value: str | None,
@@ -97,6 +101,7 @@ class NotEqualToValues(
         self.values = values
         self.human_msg: str | None = human_msg
 
+    @metrics.tracker
     async def _validate(
         self,
         value: types.AnyGenericInput | None,
