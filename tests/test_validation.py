@@ -5,7 +5,7 @@ import pytest
 import example_app
 import fastapi_rest_framework
 
-from . import shortcuts
+from . import factories, shortcuts
 
 
 async def test_validation_empty_body(
@@ -192,3 +192,135 @@ async def test_create_api_failed_validation_list(
         field="body.text_list_nullable.2",
     )
     assert response_data.detail == "Value is invalid", response_data
+
+
+async def test_create_api_unique_together(
+    test_model_lazy_url: fastapi_rest_framework.testing.LazyUrl,
+    auth_api_client_factory: shortcuts.AuthApiClientFactory,
+    user_jwt_data: shortcuts.UserData | None,
+    repository: example_app.repositories.TestModelRepository,
+    test_model: example_app.models.TestModel,
+) -> None:
+    """Test create API with unique together failure."""
+    test_model.m2m_related_models_ids = []
+    schema = example_app.views.TestModelAPIView.create_schema.model_validate(
+        test_model,
+    )
+    schema.text_unique = "TextUnique"
+    response = await auth_api_client_factory(user_jwt_data).post(
+        test_model_lazy_url(action_name="create"),
+        json=schema.model_dump(mode="json"),
+    )
+    response_data = fastapi_rest_framework.testing.extract_error_from_response(
+        response=response,
+        field="body",
+    )
+    assert response_data.detail == (
+        "Values of fields ('text', 'text_nullable') "
+        "should be unique together."
+    ), response_data
+
+
+async def test_update_api_unique_together(
+    test_model_lazy_url: fastapi_rest_framework.testing.LazyUrl,
+    auth_api_client_factory: shortcuts.AuthApiClientFactory,
+    user_jwt_data: shortcuts.UserData | None,
+    repository: example_app.repositories.TestModelRepository,
+    test_model: example_app.models.TestModel,
+) -> None:
+    """Test update API with unique together failure."""
+    test_model.m2m_related_models_ids = []
+    new_test_model = await factories.TestModelFactory.create_async(
+        repository.db_session,
+    )
+    schema = example_app.views.TestModelAPIView.create_schema.model_validate(
+        test_model,
+    )
+    schema.text = new_test_model.text
+    schema.text_nullable = new_test_model.text_nullable
+    response = await auth_api_client_factory(user_jwt_data).put(
+        test_model_lazy_url(action_name="update", pk=test_model.id),
+        json=schema.model_dump(mode="json"),
+    )
+    response_data = fastapi_rest_framework.testing.extract_error_from_response(
+        response=response,
+        field="body",
+    )
+    assert response_data.detail == (
+        "Values of fields ('text', 'text_nullable') "
+        "should be unique together."
+    ), response_data
+
+
+async def test_create_api_regex_validation(
+    test_model_lazy_url: fastapi_rest_framework.testing.LazyUrl,
+    auth_api_client_factory: shortcuts.AuthApiClientFactory,
+    user_jwt_data: shortcuts.UserData | None,
+    repository: example_app.repositories.TestModelRepository,
+    test_model: example_app.models.TestModel,
+) -> None:
+    """Test create when user fails regex validation."""
+    test_model.m2m_related_models_ids = []
+    schema = example_app.views.TestModelAPIView.create_schema.model_validate(
+        test_model,
+    )
+    schema.text_nullable = "123456"
+    response = await auth_api_client_factory(user_jwt_data).post(
+        test_model_lazy_url(action_name="create"),
+        json=schema.model_dump(mode="json"),
+    )
+    response_data = fastapi_rest_framework.testing.extract_error_from_response(
+        response=response,
+        field="body.text_nullable",
+    )
+    assert response_data.detail == "Regex validation failed", response_data
+
+
+async def test_create_api_unique_by_field_validation(
+    test_model_lazy_url: fastapi_rest_framework.testing.LazyUrl,
+    auth_api_client_factory: shortcuts.AuthApiClientFactory,
+    user_jwt_data: shortcuts.UserData | None,
+    repository: example_app.repositories.TestModelRepository,
+    test_model: example_app.models.TestModel,
+) -> None:
+    """Test create when user fails unique by field validation."""
+    test_model.m2m_related_models_ids = []
+    schema = example_app.views.TestModelAPIView.create_schema.model_validate(
+        test_model,
+    )
+    response = await auth_api_client_factory(user_jwt_data).post(
+        test_model_lazy_url(action_name="create"),
+        json=schema.model_dump(mode="json"),
+    )
+    response_data = fastapi_rest_framework.testing.extract_error_from_response(
+        response=response,
+        field="body.text_unique",
+    )
+    assert (
+        response_data.detail
+        == "There is already an instance with same Text unique"
+    ), response_data
+
+
+async def test_create_api_invalid_fk(
+    test_model_lazy_url: fastapi_rest_framework.testing.LazyUrl,
+    auth_api_client_factory: shortcuts.AuthApiClientFactory,
+    user_jwt_data: shortcuts.UserData | None,
+    repository: example_app.repositories.TestModelRepository,
+    test_model: example_app.models.TestModel,
+) -> None:
+    """Test create when user fails foreign key validation."""
+    test_model.m2m_related_models_ids = []
+    schema = example_app.views.TestModelAPIView.create_schema.model_validate(
+        test_model,
+    )
+    schema.related_model_id = -1
+    response = await auth_api_client_factory(user_jwt_data).post(
+        test_model_lazy_url(action_name="create"),
+        json=schema.model_dump(mode="json"),
+    )
+    response_data = fastapi_rest_framework.testing.extract_error_from_response(
+        response=response,
+        field="body.related_model_id",
+    )
+    assert response_data.detail == "Related model was not found", response_data

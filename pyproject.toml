@@ -261,6 +261,7 @@ addopts = [
     "--ff",
     "--cov=fastapi_rest_framework",
     "--cov-report=html",
+    "--cov-report=term"
 ]
 # skip all files inside following dirs
 norecursedirs = [

@@ -3,7 +3,7 @@ import pytest
 import example_app
 import fastapi_rest_framework
 
-from . import shortcuts
+from . import factories, shortcuts
 
 
 @pytest.mark.parametrize(
@@ -21,6 +21,20 @@ async def test_update_api(
     test_model: example_app.models.TestModel,
 ) -> None:
     """Test create API."""
+    m2m_models = await factories.M2MModelFactory.create_batch_async(
+        session=repository.db_session,
+        test_model_id=test_model.id,
+        size=3,
+    )
+    test_model.m2m_related_models_ids = [
+        m2m_models[0].related_model_id,
+        (
+            await factories.RelatedModelFactory.create_async(
+                repository.db_session,
+            )
+        ).id,
+        m2m_models[1].related_model_id,
+    ]
     schema = example_app.views.TestModelAPIView.update_schema.model_validate(
         test_model,
     )
@@ -42,6 +56,14 @@ async def test_update_api(
     )
     assert (instance := await repository.fetch_first(id=response_data.id))
     assert instance.text == schema.text
+    m2m_related_models = sorted(
+        await instance.awaitable_attrs.m2m_related_models,
+        key=lambda m2m_related_model: m2m_related_model.id,
+    )
+    assert len(m2m_related_models) == 3
+    assert m2m_related_models[0].id == m2m_models[0].related_model_id
+    assert m2m_related_models[1].id == m2m_models[1].related_model_id
+    assert m2m_related_models[2].id == test_model.m2m_related_models_ids[1]
 
 
 @pytest.mark.parametrize(

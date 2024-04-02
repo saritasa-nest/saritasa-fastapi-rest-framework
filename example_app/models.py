@@ -62,6 +62,12 @@ class RelatedModel(
 class FieldsMixin:
     """Mixin which adds fields to models."""
 
+    text_unique: sqlalchemy.orm.Mapped[str] = sqlalchemy.orm.mapped_column(
+        sqlalchemy.String(500),
+        unique=True,
+        nullable=False,
+    )
+
     text: sqlalchemy.orm.Mapped[str] = sqlalchemy.orm.mapped_column(
         sqlalchemy.String(250),
         nullable=False,
@@ -72,6 +78,11 @@ class FieldsMixin:
             sqlalchemy.String(30),
             nullable=True,
         )
+    )
+
+    timezone: sqlalchemy.orm.Mapped[str] = sqlalchemy.orm.mapped_column(
+        sqlalchemy.String(100),
+        nullable=False,
     )
 
     class TextEnum(enum.StrEnum):

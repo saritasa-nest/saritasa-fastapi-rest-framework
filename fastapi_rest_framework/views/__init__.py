@@ -1,8 +1,10 @@
-from .action import action
-from .constants import DEFAULT_ERROR_RESPONSES
-from .core import (
+from .actions import ActionMixin, action
+from .base import (
     AnyBaseAPIView,
     BaseAPIView,
+)
+from .constants import DEFAULT_ERROR_RESPONSES
+from .core import (
     BaseAPIViewMeta,
     BaseAPIViewMixin,
 )

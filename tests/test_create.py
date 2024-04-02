@@ -5,7 +5,7 @@ import pytest
 import example_app
 import fastapi_rest_framework
 
-from . import shortcuts
+from . import factories, shortcuts
 
 
 @pytest.mark.parametrize(
@@ -23,11 +23,26 @@ async def test_create_api(
     test_model: example_app.models.TestModel,
 ) -> None:
     """Test create API."""
+    test_model.m2m_related_models_ids = [
+        (
+            await factories.RelatedModelFactory.create_async(
+                repository.db_session,
+            )
+        ).id,
+        (
+            await factories.RelatedModelFactory.create_async(
+                repository.db_session,
+            )
+        ).id,
+    ]
+    schema = example_app.views.TestModelAPIView.create_schema.model_validate(
+        test_model,
+    )
+    schema.text_unique = "TextUnique"
+    schema.text_nullable = "TestValue"
     response = await auth_api_client_factory(user).post(
         test_model_lazy_url(action_name="create"),
-        json=example_app.views.TestModelAPIView.create_schema.model_validate(
-            test_model,
-        ).model_dump(mode="json"),
+        json=schema.model_dump(mode="json"),
     )
     if not fastapi_rest_framework.testing.validate_auth_required_response(
         response,
@@ -41,7 +56,14 @@ async def test_create_api(
             expected_status=http.HTTPStatus.CREATED,
         )
     )
-    assert await repository.exists(id=response_data.id)
+    assert (instance := await repository.fetch_first(id=response_data.id))
+    m2m_related_models = sorted(
+        await instance.awaitable_attrs.m2m_related_models,
+        key=lambda m2m_related_model: m2m_related_model.id,
+    )
+    assert len(m2m_related_models) == 2
+    assert m2m_related_models[0].id == test_model.m2m_related_models_ids[0]
+    assert m2m_related_models[1].id == test_model.m2m_related_models_ids[1]
 
 
 @pytest.mark.parametrize(
@@ -59,11 +81,13 @@ async def test_create_api_custom_detail_response(
     soft_delete_test_model: example_app.models.SoftDeleteTestModel,
 ) -> None:
     """Test create API with customized detail response."""
+    schema = example_app.views.SoftDeleteTestModelAPIView.create_schema.model_validate(  # noqa: E501
+        soft_delete_test_model,
+    )
+    schema.text_unique = "TextUnique"
     response = await auth_api_client_factory(user).post(
         soft_delete_test_model_lazy_url(action_name="create"),
-        json=example_app.views.SoftDeleteTestModelAPIView.create_schema.model_validate(
-            soft_delete_test_model,
-        ).model_dump(mode="json"),
+        json=schema.model_dump(mode="json"),
     )
     if not fastapi_rest_framework.testing.validate_auth_required_response(
         response,

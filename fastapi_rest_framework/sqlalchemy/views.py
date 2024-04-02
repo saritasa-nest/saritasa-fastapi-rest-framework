@@ -1,3 +1,5 @@
+import collections.abc
+import enum
 import typing
 
 import fastapi
@@ -108,6 +110,16 @@ class ListMixin(
     ],
 ):
     """List mixin for sqlalchemy."""
+
+    def get_ordering_enum(
+        self,
+        ordering_fields: collections.abc.Sequence[str],
+    ) -> type[enum.StrEnum]:
+        """Prepare ordering enum."""
+        return saritasa_sqlalchemy_tools.OrderingEnum(  # type: ignore
+            "OrderingEnum",
+            ordering_fields,
+        )
 
 
 class DetailMixin(

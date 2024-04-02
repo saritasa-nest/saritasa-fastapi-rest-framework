@@ -60,6 +60,7 @@ from .validators import (
 )
 from .views import (
     DEFAULT_ERROR_RESPONSES,
+    ActionMixin,
     ActionResponsesMap,
     AnyBaseAPIView,
     AnyFilters,
@@ -100,6 +101,7 @@ __all__ = (
     "jwt",
     "testing",
     "ActionResponsesMap",
+    "ActionMixin",
     "AnyBaseAPIView",
     "AnyFilters",
     "BaseAPIView",

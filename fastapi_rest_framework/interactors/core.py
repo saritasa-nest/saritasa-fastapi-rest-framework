@@ -248,6 +248,7 @@ class ApiDataInteractor(
                 instance=instance,
                 m2m_config=m2m_config,
                 link_values=values,
+                context=context,
             )
         return instance
 
@@ -279,6 +280,7 @@ class ApiDataInteractor(
                 instance=instance,
                 m2m_config=m2m_config,
                 link_values=values,
+                context=context,
             )
         return instance
 
@@ -301,6 +303,7 @@ class ApiDataInteractor(
     async def create_batch(
         self,
         data: collections.abc.Sequence[validators.ApiDataType],
+        context: common_types.ContextType,
     ) -> list[repositories.APIModelT]:
         """Perform bulk create."""
         return await self._create_batch_in_db(
@@ -310,6 +313,7 @@ class ApiDataInteractor(
     async def update_batch(
         self,
         data: collections.abc.Sequence[validators.ApiDataType],
+        context: common_types.ContextType,
     ) -> None:
         """Perform bulk update."""
         await self._update_batch_in_db(
@@ -370,6 +374,7 @@ class ApiDataInteractor(
         instance: repositories.APIModelT,
         m2m_config: M2MCreateUpdateConfig,
         link_values: list[str | int],
+        context: common_types.ContextType,
     ) -> repositories.APIModelT:
         """Create m2m connection for new instance."""
         interactor = self._init_m2m_interactor(m2m_config=m2m_config)
@@ -385,6 +390,7 @@ class ApiDataInteractor(
                 }
                 for link_field_value in set(link_values)
             ],
+            context=context,
         )
         return instance
 
@@ -393,6 +399,7 @@ class ApiDataInteractor(
         instance: repositories.APIModelT,
         m2m_config: M2MCreateUpdateConfig,
         link_values: list[str | int],
+        context: common_types.ContextType,
     ) -> repositories.APIModelT:
         """Update m2m connection for updated instance."""
         interactor = self._init_m2m_interactor(m2m_config=m2m_config)
@@ -436,6 +443,7 @@ class ApiDataInteractor(
                 }
                 for link_field_value in set(link_values) - ids_from_db
             ],
+            context=context,
         )
         return instance
 

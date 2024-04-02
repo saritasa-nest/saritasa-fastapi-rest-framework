@@ -269,3 +269,31 @@ async def test_filter_m2m(
     )
     assert len(response_data.results) == 1
     assert response_data.results[0].id == test_model.id
+
+
+async def test_list_reverse_ordering(
+    test_model_lazy_url: fastapi_rest_framework.testing.LazyUrl,
+    auth_api_client_factory: shortcuts.AuthApiClientFactory,
+    user_jwt_data: shortcuts.UserData,
+    test_model_list: list[example_app.models.TestModel],
+) -> None:
+    """Test reverse ordering."""
+    response = await auth_api_client_factory(user_jwt_data).get(
+        test_model_lazy_url(action_name="list"),
+        params={
+            "order_by": "-id",
+        },
+    )
+    response_data = (
+        fastapi_rest_framework.testing.extract_paginated_result_from_response(
+            response=response,
+            schema=example_app.views.TestModelAPIView.list_schema,
+        )
+    )
+    assert len(response_data.results) == 5
+    for actual, expected in zip(
+        response_data.results,
+        test_model_list[::-1],
+        strict=False,
+    ):
+        assert actual.id == expected.id

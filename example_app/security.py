@@ -24,6 +24,15 @@ class UserJWTData(pydantic.BaseModel):
         """If user_id is more than 0, then it's not anonymous user."""
         return self.id <= 0
 
+    @pydantic.field_serializer("iat", "exp")
+    def serialize_datetime(
+        self,
+        value: datetime.datetime,
+        info: pydantic.FieldSerializationInfo,
+    ) -> int:
+        """Serialize datetime."""
+        return int(value.timestamp())
+
 
 class JWTAuthClass(
     fastapi_rest_framework.jwt.JWTTokenAuthentication[UserJWTData],
@@ -38,6 +47,7 @@ jwt_private_key, jwt_public_key = (
 )
 JWTAuth = JWTAuthClass(
     jwt_public_key=jwt_public_key,
+    jwt_private_key=jwt_private_key,
     jwt_algorithms=("RS256",),
 )
 
