@@ -20,7 +20,7 @@ class PaginationParams(
     offset: int = pydantic.Field(
         fastapi.Query(
             default=0,
-            gte=0,
+            ge=0,
         ),
     )
     limit: int

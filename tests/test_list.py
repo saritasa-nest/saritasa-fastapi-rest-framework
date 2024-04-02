@@ -92,6 +92,29 @@ async def test_list_api_pagination(
     assert len(response_data.results) == expected_count
 
 
+@pytest.mark.usefixtures("test_model_list")
+async def test_list_api_pagination_negative_offset(
+    test_model_lazy_url: fastapi_rest_framework.testing.LazyUrl,
+    auth_api_client_factory: shortcuts.AuthApiClientFactory,
+    user_jwt_data: shortcuts.UserData,
+) -> None:
+    """Test that pagination for list API works correctly on negative offset."""
+    response = await auth_api_client_factory(user_jwt_data).get(
+        test_model_lazy_url(action_name="list"),
+        params={
+            "limit": 10,
+            "offset": -10,
+        },
+    )
+    response_data = fastapi_rest_framework.testing.extract_error_from_response(
+        response=response,
+        field="query.offset",
+    )
+    assert (
+        response_data.detail == "Input should be greater than or equal to 0"
+    ), response_data
+
+
 async def test_list_api_search_filter(
     test_model_lazy_url: fastapi_rest_framework.testing.LazyUrl,
     auth_api_client_factory: shortcuts.AuthApiClientFactory,
