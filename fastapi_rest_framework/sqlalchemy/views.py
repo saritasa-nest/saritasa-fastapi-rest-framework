@@ -117,7 +117,7 @@ class ListMixin(
     ) -> type[enum.StrEnum]:
         """Prepare ordering enum."""
         return saritasa_sqlalchemy_tools.OrderingEnum(  # type: ignore
-            "OrderingEnum",
+            f"{self.__class__.__name__}OrderingEnum",
             ordering_fields,
         )
 
