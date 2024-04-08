@@ -52,6 +52,15 @@ class DeleteMixin(
             permissions=self.get_permissions(
                 action=self.action,
             ),
+            annotations=self.get_annotations(
+                action=self.action,
+            ),
+            joined_load=self.get_joined_load_options(
+                action=self.action,
+            ),
+            select_in_load=self.get_select_in_load_options(
+                action=self.action,
+            ),
         )
 
     def prepare_delete(
@@ -74,6 +83,11 @@ class DeleteMixin(
                 permissions.UserT,
             ]
         ] = (),
+        annotations: collections.abc.Sequence[repositories.AnnotationT] = (),
+        joined_load: collections.abc.Sequence[repositories.LazyLoadedT] = (),
+        select_in_load: collections.abc.Sequence[
+            repositories.LazyLoadedT
+        ] = (),
     ) -> collections.abc.Callable[
         ...,
         collections.abc.Coroutine[typing.Any, typing.Any, None],
@@ -90,6 +104,9 @@ class DeleteMixin(
                 pk=pk,
                 user=user,
                 repository=repository,
+                annotations=annotations,
+                joined_load=joined_load,
+                select_in_load=select_in_load,
             )
             await self.check_permissions(
                 user=user,
