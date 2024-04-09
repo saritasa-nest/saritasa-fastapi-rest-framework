@@ -77,19 +77,6 @@ class BaseAPIViewMeta(type):
             "router_kwargs_map",
             {},
         )
-        if not getattr(obj_cls, "interactor", None):
-
-            class DefaultInteractor(
-                interactors.ApiDataInteractor[  # type: ignore
-                    typing.Any,
-                    typing.Any,
-                    obj_cls.repository_class,  # type: ignore
-                    obj_cls.model,  # type: ignore
-                ],
-            ):
-                model = obj_cls.model  # type: ignore
-
-            obj_cls.interactor = DefaultInteractor  # type: ignore
         obj_cls.register_endpoints()
         return obj_cls
 
@@ -161,27 +148,32 @@ class BaseAPIViewMixin(
         ],
     ]
     # Validators for each endpoint(usually create/update)
+    validator: types.ActionValidatorType[
+        repositories.ApiRepositoryProtocolT,
+        repositories.APIModelT,
+    ]
     validators_map: typing.Mapping[
         str,
-        type[
-            validators.BaseModelValidator[
-                repositories.ApiRepositoryProtocolT,
-                repositories.APIModelT,
-            ]
-            | validators.BaseModelListValidator[
-                repositories.ApiRepositoryProtocolT,
-                repositories.APIModelT,
-            ]
+        types.ActionValidatorType[
+            repositories.ApiRepositoryProtocolT,
+            repositories.APIModelT,
         ],
     ]
     # Interactors for each endpoint(usually create/update/delete)
-    interactor: type[
-        interactors.ApiDataInteractor[
+    interactor: types.ActionInteractorType[
+        permissions.UserT,
+        repositories.SelectStatementT,
+        repositories.ApiRepositoryProtocolT,
+        repositories.APIModelT,
+    ]
+    interactors_map: typing.Mapping[
+        str,
+        types.ActionInteractorType[
             permissions.UserT,
             repositories.SelectStatementT,
             repositories.ApiRepositoryProtocolT,
             repositories.APIModelT,
-        ]
+        ],
     ]
 
     @classmethod
@@ -328,32 +320,84 @@ class BaseAPIViewMixin(
         return self.permission_map[action]
 
     @metrics.tracker
+    def get_default_validator(
+        self,
+    ) -> types.ActionValidatorType[
+        repositories.ApiRepositoryProtocolT,
+        repositories.APIModelT,
+    ]:
+        """Get default validator class."""
+
+        class DefaultValidator(
+            validators.BaseModelValidator[
+                self.repository_class,  # type: ignore
+                self.model,  # type: ignore
+            ],
+        ):
+            model: type[repositories.APIModelT] = self.model
+
+        return DefaultValidator
+
+    @metrics.tracker
     def get_validator(
         self,
         action: str = "default",
-    ) -> type[
-        validators.BaseModelValidator[
-            repositories.ApiRepositoryProtocolT,
-            repositories.APIModelT,
-        ]
-        | validators.BaseModelListValidator[
-            repositories.ApiRepositoryProtocolT,
-            repositories.APIModelT,
-        ]
+    ) -> types.ActionValidatorType[
+        repositories.ApiRepositoryProtocolT,
+        repositories.APIModelT,
     ]:
         """Get validator for endpoint."""
-        if action not in self.validators_map:
-
-            class DefaultValidator(
-                validators.BaseModelValidator[
-                    self.repository_class,  # type: ignore
-                    self.model,  # type: ignore
-                ],
-            ):
-                model: type[repositories.APIModelT] = self.model
-
-            return self.validators_map.get("default", DefaultValidator)
+        if validator := getattr(self, "validator", None):
+            return validator
+        if action not in getattr(self, "validators_map", {}):
+            return getattr(self, "validators_map", {}).get(
+                "default",
+                self.get_default_validator(),
+            )
         return self.validators_map[action]
+
+    @metrics.tracker
+    def get_default_interactor(
+        self,
+    ) -> types.ActionInteractorType[
+        permissions.UserT,
+        repositories.SelectStatementT,
+        repositories.ApiRepositoryProtocolT,
+        repositories.APIModelT,
+    ]:
+        """Get default interactor class."""
+
+        class DefaultInteractor(
+            interactors.ApiDataInteractor[
+                typing.Any,
+                typing.Any,
+                self.repository_class,  # type: ignore
+                self.model,  # type: ignore
+            ],
+        ):
+            model: type[repositories.APIModelT] = self.model
+
+        return DefaultInteractor
+
+    @metrics.tracker
+    def get_interactor(
+        self,
+        action: str = "default",
+    ) -> types.ActionInteractorType[
+        permissions.UserT,
+        repositories.SelectStatementT,
+        repositories.ApiRepositoryProtocolT,
+        repositories.APIModelT,
+    ]:
+        """Get interactor for endpoint."""
+        if interactor := getattr(self, "interactor", None):
+            return interactor
+        if action not in getattr(self, "interactors_map", {}):
+            return getattr(self, "interactors_map", {}).get(
+                "default",
+                self.get_default_interactor(),
+            )
+        return self.interactors_map[action]
 
     @metrics.tracker
     def get_responses(
@@ -541,7 +585,7 @@ class BaseAPIViewMixin(
             repository=repository,
             instance=instance,
         )(
-            value=model.model_dump(),
+            value=dict(model),
             context=context,
         )
         return validated_data or {}

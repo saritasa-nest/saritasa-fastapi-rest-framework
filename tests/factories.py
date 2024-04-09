@@ -25,7 +25,8 @@ class UserJWTDataFactory(factory.Factory):
 
 class TestModelFactory(
     saritasa_sqlalchemy_tools.AsyncSQLAlchemyModelFactory[
-        example_app.models.TestModel
+        example_app.repositories.TestModelRepository.model,
+        example_app.repositories.TestModelRepository,
     ],
 ):
     """Factory to generate TestModel."""
@@ -67,6 +68,7 @@ class TestModelFactory(
     date = factory.Faker("date_between")
     timedelta = factory.Faker("time_delta")
     json_field = factory.Faker("pydict", allowed_types=[str, int, float])
+    date_range = saritasa_sqlalchemy_tools.DateRangeFactory()
 
     class Meta:
         model = example_app.models.TestModel
@@ -79,7 +81,8 @@ class TestModelFactory(
 
 class SoftDeleteTestModelFactory(
     saritasa_sqlalchemy_tools.AsyncSQLAlchemyModelFactory[
-        example_app.models.SoftDeleteTestModel
+        example_app.repositories.SoftDeleteTestModelRepository.model,
+        example_app.repositories.SoftDeleteTestModelRepository,
     ],
 ):
     """Factory to generate SoftDeleteTestModel."""
@@ -121,6 +124,7 @@ class SoftDeleteTestModelFactory(
     date = factory.Faker("date_between")
     timedelta = factory.Faker("time_delta")
     json_field = factory.Faker("pydict", allowed_types=[str, int, float])
+    date_range = saritasa_sqlalchemy_tools.DateRangeFactory()
 
     class Meta:
         model = example_app.models.SoftDeleteTestModel
@@ -129,7 +133,8 @@ class SoftDeleteTestModelFactory(
 
 class RelatedModelFactory(
     saritasa_sqlalchemy_tools.AsyncSQLAlchemyModelFactory[
-        example_app.models.RelatedModel
+        example_app.repositories.RelatedModelRepository.model,
+        example_app.repositories.RelatedModelRepository,
     ],
 ):
     """Factory to generate RelatedModel."""
@@ -141,7 +146,8 @@ class RelatedModelFactory(
 
 class M2MModelFactory(
     saritasa_sqlalchemy_tools.AsyncSQLAlchemyModelFactory[
-        example_app.models.M2MModel
+        example_app.repositories.M2MModelRepository.model,
+        example_app.repositories.M2MModelRepository,
     ],
 ):
     """Factory to generate M2MModel."""

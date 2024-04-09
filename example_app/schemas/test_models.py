@@ -177,6 +177,8 @@ class TestModelCreateRequestAutoSchema(
             "related_model_id_nullable",
             "json_field",
             "json_field_nullable",
+            "date_range",
+            "date_range_nullable",
             ("m2m_related_models_ids", list[int]),
         )
 
@@ -218,6 +220,8 @@ class TestModelBulkCreateRequestAutoSchema(
             "related_model_id_nullable",
             "json_field",
             "json_field_nullable",
+            "date_range",
+            "date_range_nullable",
         )
 
 
@@ -258,6 +262,8 @@ class TestModelUpdateRequestAutoSchema(
             "related_model_id_nullable",
             "json_field",
             "json_field_nullable",
+            "date_range",
+            "date_range_nullable",
             ("m2m_related_models_ids", list[int]),
         )
 

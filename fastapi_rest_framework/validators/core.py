@@ -34,7 +34,7 @@ class BaseValidator(
         """Validate data."""
         try:
             validated_value = await self._validate(
-                value=value,
+                value=self._cast_input(value),
                 context=context,
                 loc=loc,
             )
@@ -49,10 +49,17 @@ class BaseValidator(
             raise validation_error_list from validation_error
         return validated_value
 
+    def _cast_input(
+        self,
+        value: typing.Any | None,
+    ) -> types.AnyGenericInput | None:
+        """Cast input before validation."""
+        return value
+
     @abc.abstractmethod
     async def _validate(
         self,
-        value: types.AnyGenericInput,
+        value: types.AnyGenericInput | None,
         loc: types.LOCType,
         context: common_types.ContextType,
     ) -> types.AnyGenericOutput | None:
@@ -67,10 +74,16 @@ class ValidationError(Exception):
         error_type: ValidationErrorType | None = None,
         error_message: str | None = None,
         all_errors: list[typing.Self] | None = None,
+        context: common_types.ContextType | None = None,
     ) -> None:
-        self.error_type: ValidationErrorType | None = error_type
-        self.error_message: str | None = error_message
-        self.all_errors: list[typing.Self] | None = all_errors
+        self.error_type = error_type
+        self.error_message = error_message
+        self.all_errors = all_errors
+        # Error context that can be used by frontend to fetch related data to
+        # show more explicit errors. For example, we can pass list of IDs of
+        # some objects and according to this data frontend will display
+        # user-friendly error.
+        self.context = context
         self.loc: types.LOCType
         if self.all_errors and self.error_message:
             raise ValueError(  # pragma: no cover
@@ -91,6 +104,7 @@ class ValidationError(Exception):
                 field=".".join(map(str, self.loc)),
                 type=self.error_type,
                 detail=self.error_message,
+                context=self.context,
             )
         if self.all_errors:
             errors: list[schemas.ValidationErrorSchema] = []

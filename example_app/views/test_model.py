@@ -207,12 +207,7 @@ class TestModelAPIView(
     ) -> None:
         """Recreate all instances."""
         data = await validator(repository=repository)(
-            value=list(
-                map(
-                    schemas.TestModelCreateRequest.model_dump,
-                    objects,
-                ),
-            ),
+            value=list(map(dict, objects)),
             context=dict(context),
         )
         if data is None:

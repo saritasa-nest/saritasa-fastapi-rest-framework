@@ -71,6 +71,8 @@ class SoftDeleteTestModelCreateUpdateRequestAutoSchema(
             "timedelta_nullable",
             "json_field",
             "json_field_nullable",
+            "date_range",
+            "date_range_nullable",
         )
 
 

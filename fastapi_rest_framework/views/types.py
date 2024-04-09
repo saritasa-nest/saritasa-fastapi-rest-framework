@@ -2,6 +2,8 @@ import typing
 
 import pydantic
 
+from .. import interactors, permissions, repositories, validators
+
 DetailSchema = typing.TypeVar(
     "DetailSchema",
     bound=pydantic.BaseModel,
@@ -21,6 +23,24 @@ UpdateSchema = typing.TypeVar(
 
 ResponsesMap: typing.TypeAlias = dict[int | str, dict[str, typing.Any]]
 ActionResponsesMap: typing.TypeAlias = dict[str, ResponsesMap]
+ActionValidatorType: typing.TypeAlias = type[
+    validators.BaseModelValidator[
+        repositories.ApiRepositoryProtocolT,
+        repositories.APIModelT,
+    ]
+    | validators.BaseModelListValidator[
+        repositories.ApiRepositoryProtocolT,
+        repositories.APIModelT,
+    ]
+]
+ActionInteractorType: typing.TypeAlias = type[
+    interactors.ApiDataInteractor[
+        permissions.UserT,
+        repositories.SelectStatementT,
+        repositories.ApiRepositoryProtocolT,
+        repositories.APIModelT,
+    ]
+]
 
 
 class Context(pydantic.BaseModel):

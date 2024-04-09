@@ -139,17 +139,26 @@ class ApiDataInteractor(
         )
 
     @metrics.tracker
+    def _prepare_data_for_instance(
+        self,
+        data: validators.ApiDataType,
+    ) -> validators.ApiDataType:
+        """Prepare data for instance init or update."""
+        return data
+
+    @metrics.tracker
     def _prepare_instance_from_api(
         self,
         data: validators.ApiDataType,
     ) -> repositories.APIModelT:
         """Prepare instance from API."""
+        prepared_data = self._prepare_data_for_instance(data)
         if self.instance:
-            for field, value in data.items():
+            for field, value in prepared_data.items():
                 setattr(self.instance, field, value)
             return self.instance
         else:
-            return self.repository.model(**data)  # type: ignore
+            return self.repository.model(**prepared_data)  # type: ignore
 
     async def _prepare_instance_create(
         self,

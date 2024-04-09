@@ -48,7 +48,9 @@ class DeleteMixin(
             user_dependency=self.user_dependency,
             repository_dependency=self.repository_dependency,
             context_dependency=self.context_dependency,
-            interactor=self.interactor,  # type: ignore
+            interactor=self.get_interactor(
+                action=self.action,
+            ),
             permissions=self.get_permissions(
                 action=self.action,
             ),

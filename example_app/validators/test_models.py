@@ -10,7 +10,7 @@ class TextListValidator(
 
     async def _validate(
         self,
-        value: str,
+        value: str | None,
         loc: fastapi_rest_framework.LOCType,
         context: fastapi_rest_framework.ContextType,
     ) -> str | None:

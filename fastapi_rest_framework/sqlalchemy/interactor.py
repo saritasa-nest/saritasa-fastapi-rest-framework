@@ -2,7 +2,7 @@ import typing
 
 import saritasa_sqlalchemy_tools
 
-from .. import interactors, permissions
+from .. import interactors, metrics, permissions, validators
 from . import repositories
 
 
@@ -22,6 +22,19 @@ class SqlAlchemyInteractor(
     ],
 ):
     """Interactor for sqlalchemy."""
+
+    @metrics.tracker
+    def _prepare_data_for_instance(
+        self,
+        data: validators.ApiDataType,
+    ) -> validators.ApiDataType:
+        """Prepare data for instance init or update."""
+        prepared_data: validators.ApiDataType = {}
+        for key, value in data.items():
+            if to_db := getattr(value, "to_db", None):
+                value = to_db()
+            prepared_data[key] = value
+        return prepared_data
 
 
 class SqlAlchemyInteractorHooksMixin(

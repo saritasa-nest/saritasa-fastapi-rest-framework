@@ -81,7 +81,9 @@ class UpdateMixin(
             user_dependency=self.user_dependency,
             repository_dependency=self.repository_dependency,
             context_dependency=self.context_dependency,
-            interactor=self.interactor,  # type: ignore
+            interactor=self.get_interactor(
+                action=self.action,
+            ),
             annotations=self.get_annotations(
                 action=self.action,
             ),

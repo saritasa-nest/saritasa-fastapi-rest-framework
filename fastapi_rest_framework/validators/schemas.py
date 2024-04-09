@@ -1,5 +1,7 @@
 import pydantic
 
+from .. import common_types
+
 
 class BaseModel(pydantic.BaseModel):
     """Base model for schemas."""
@@ -15,6 +17,7 @@ class ValidationErrorSchema(BaseModel):
     field: str
     detail: str
     type: str
+    context: common_types.ContextType | None = None
 
 
 class GenericError(BaseModel):

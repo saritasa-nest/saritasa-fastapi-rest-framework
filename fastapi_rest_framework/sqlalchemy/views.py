@@ -7,7 +7,7 @@ import saritasa_sqlalchemy_tools
 import sqlalchemy
 
 from .. import metrics, permissions, views
-from . import dependencies, repositories
+from . import dependencies, interactor, repositories
 
 
 class SqlAlchemyView(
@@ -84,6 +84,30 @@ class SqlAlchemyView(
                 ),
             ),
         ]
+
+    @metrics.tracker
+    def get_default_interactor(
+        self,
+    ) -> views.types.ActionInteractorType[
+        permissions.UserT,
+        saritasa_sqlalchemy_tools.SelectStatement[
+            saritasa_sqlalchemy_tools.BaseModelT
+        ],
+        repositories.SqlAlchemyRepositoryT,
+        saritasa_sqlalchemy_tools.BaseModelT,
+    ]:
+        """Get default interactor class."""
+
+        class DefaultInteractor(
+            interactor.SqlAlchemyInteractor[
+                typing.Any,
+                self.repository_class,  # type: ignore
+                self.model,  # type: ignore
+            ],
+        ):
+            model: type[saritasa_sqlalchemy_tools.BaseModelT] = self.model
+
+        return DefaultInteractor  # type: ignore
 
 
 class ListMixin(

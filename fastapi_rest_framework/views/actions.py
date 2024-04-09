@@ -191,7 +191,9 @@ class ActionMixin(
                 validator=self.get_validator(
                     action=self.action,
                 ),
-                interactor=self.interactor,
+                interactor=self.get_interactor(
+                    action=self.action,
+                ),
                 joined_load=self.get_joined_load_options(
                     action=self.action,
                 ),
@@ -273,7 +275,9 @@ class ActionMixin(
                 validator=self.get_validator(
                     action=self.action,
                 ),
-                interactor=self.interactor,
+                interactor=self.get_interactor(
+                    action=self.action,
+                ),
                 joined_load=self.get_joined_load_options(
                     action=self.action,
                 ),
