@@ -32,6 +32,7 @@ class Filters(
         ],
         repositories.WhereFilterT,
     ]
+    _api_to_repo_field: typing.ClassVar[dict[str, str]] = {}
 
     @metrics.tracker
     def transform_search(
@@ -91,11 +92,14 @@ class Filters(
                 continue
             filters.append(
                 self.transform_filter(
-                    user,
-                    self._model,
-                    api_filter,
-                    value,
-                    context,
+                    user=user,
+                    model=self._model,
+                    api_filter=self._api_to_repo_field.get(
+                        api_filter,
+                        api_filter,
+                    ),
+                    value=value,
+                    context=context,
                 ),
             )
         return filters

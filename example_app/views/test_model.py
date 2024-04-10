@@ -1,4 +1,5 @@
 import http
+import typing
 
 import fastapi
 import pydantic
@@ -23,11 +24,14 @@ class Filters(core.Filters[repositories.TestModelRepository.model]):
         "id",
         "text",
     )
+    _api_to_repo_field: typing.ClassVar[dict[str, str]] = {
+        "m2m_related_models_ids__in": "m2m_related_models__id__in",
+    }
 
     search: str = pydantic.Field(fastapi.Query(""))
     text__in: list[str] = pydantic.Field(fastapi.Query(()))
     number__gte: int | None = pydantic.Field(fastapi.Query(None))
-    m2m_related_model_id__in: list[int] = pydantic.Field(fastapi.Query(()))
+    m2m_related_models_ids__in: list[int] = pydantic.Field(fastapi.Query(()))
     is_boolean_condition_true: bool = pydantic.Field(fastapi.Query(False))
 
     def transform_is_boolean_condition_true(

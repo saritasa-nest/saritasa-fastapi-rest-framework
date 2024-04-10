@@ -279,7 +279,7 @@ async def test_filter_m2m(
     response = await auth_api_client_factory(user_jwt_data).get(
         test_model_lazy_url(action_name="list"),
         params={
-            "m2m_related_model_id__in": [related_model.id],
+            "m2m_related_models_ids__in": [related_model.id],
             "order_by": "id",
         },
     )
