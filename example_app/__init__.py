@@ -16,6 +16,7 @@ router = fastapi.APIRouter(
 )
 router.include_router(views.TestModelAPIView.router)
 router.include_router(views.SoftDeleteTestModelAPIView.router)
+router.include_router(views.guarded_endpoint_router)
 
 fastapi_app = fastapi.FastAPI(
     title="Test APP",

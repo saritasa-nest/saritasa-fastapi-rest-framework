@@ -23,6 +23,7 @@ from .permissions import (
     PermissionInstanceT,
     RequestData,
     UserT,
+    get_permissions_dependency,
 )
 from .repositories import (
     AnnotationT,
@@ -163,6 +164,7 @@ __all__ = (
     "PermissionInstanceT",
     "RequestData",
     "UserT",
+    "get_permissions_dependency",
     "NotFoundException",
     "PermissionException",
     "UnauthorizedException",

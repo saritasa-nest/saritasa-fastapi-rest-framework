@@ -1,5 +1,7 @@
 import http
 
+import pytest
+
 import example_app
 import fastapi_rest_framework
 
@@ -47,6 +49,35 @@ async def test_default_permission(
     ):
         return
 
+    error = (
+        fastapi_rest_framework.testing.extract_general_errors_from_response(
+            response,
+            expected_status=http.HTTPStatus.FORBIDDEN,
+        )
+    )
+    assert error.detail == "User is not allowed", error
+
+
+@pytest.mark.parametrize(
+    "allow",
+    [
+        True,
+        False,
+    ],
+)
+async def test_default_permission_dependency(
+    auth_api_client_factory: shortcuts.AuthApiClientFactory,
+    user_jwt_data: shortcuts.UserData,
+    allow: bool,
+) -> None:
+    """Test endpoint get_permissions_dependency."""
+    user_jwt_data.allow = allow
+    response = await auth_api_client_factory(user_jwt_data).get(
+        "/guarded-endpoint/",
+    )
+    if allow:
+        assert response.status_code == http.HTTPStatus.OK
+        return
     error = (
         fastapi_rest_framework.testing.extract_general_errors_from_response(
             response,
