@@ -181,7 +181,7 @@ class BaseModelValidator(
     ) -> types.ApiDataType:
         """Validate data according to validation_map."""
         errors: list[core.ValidationError] = []
-        for field, value in data.items():
+        for field, value in dict(data).items():
             if field not in validation_map:
                 continue
             for validator in validation_map[field]:
