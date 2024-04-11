@@ -1,5 +1,6 @@
 import collections.abc
 import enum
+import functools
 import typing
 
 import fastapi
@@ -185,14 +186,14 @@ class ListMixin(
                 context=dict(context),
             ),
         )
+
+        model_validate = functools.partial(
+            list_schema.model_validate,
+            context=dict(context),
+        )
         return schemas.PaginatedResult[types.ListSchema](
             count=count,
-            results=list(
-                map(
-                    list_schema.model_validate,
-                    results,
-                ),
-            ),
+            results=list(map(model_validate, results)),
         )
 
     @metrics.tracker
