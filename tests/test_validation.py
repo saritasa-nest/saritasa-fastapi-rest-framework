@@ -39,7 +39,7 @@ async def test_validation_empty_body(
         ],
         [
             "text_enum",
-            "Input should be a valid string",
+            "Input should be 'value1', 'value2' or 'value3'",
         ],
         [
             "number",

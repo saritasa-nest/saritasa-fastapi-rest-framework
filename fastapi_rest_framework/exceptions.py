@@ -1,3 +1,4 @@
+import collections.abc
 import http
 
 import fastapi
@@ -34,3 +35,21 @@ class NotFoundException(fastapi.HTTPException):
         detail: str | None = None,
     ) -> None:
         super().__init__(status_code=status_code, detail=detail)
+
+
+class PermissionActionException(fastapi.HTTPException):
+    """Raise if user has no permissions for action."""
+
+    def __init__(
+        self,
+        required_permissions: collections.abc.Sequence[str],
+        status_code: http.HTTPStatus = http.HTTPStatus.FORBIDDEN,
+    ) -> None:
+        self.required_permissions = required_permissions
+        super().__init__(
+            status_code=status_code,
+            detail=(
+                "User has no permissions for this action. "
+                f"Required permissions: {','.join(required_permissions)}."
+            ),
+        )

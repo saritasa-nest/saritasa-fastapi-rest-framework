@@ -85,7 +85,10 @@ class FieldsMixin:
         nullable=False,
     )
 
-    class TextEnum(enum.StrEnum):
+    class TextEnum(
+        saritasa_sqlalchemy_tools.OpenAPIDocsEnumMixin,
+        enum.StrEnum,
+    ):
         value_1 = "value1"
         value_2 = "value2"
         value_3 = "value3"

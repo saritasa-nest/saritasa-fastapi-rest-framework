@@ -8,6 +8,7 @@ from .exception_handlers import (
 )
 from .exceptions import (
     NotFoundException,
+    PermissionActionException,
     PermissionException,
     UnauthorizedException,
 )
@@ -168,6 +169,7 @@ __all__ = (
     "NotFoundException",
     "PermissionException",
     "UnauthorizedException",
+    "PermissionActionException",
     "ContextType",
     "DEFAULT_ERROR_RESPONSES",
     "http_exception_handler",
