@@ -86,9 +86,11 @@ pytest-asyncio = "^0.21.1"
 pytest-async-sqlalchemy = "^0.2.0"
 # To prettify pytest output
 pytest-sugar = "^1.0.0"
-# Coverage plugin for pytest.
-# https://github.com/pytest-dev/pytest-cov
-pytest-cov = "^5.0.0"
+# Coverage.py is a tool for measuring code coverage of Python programs.
+# It monitors your program, noting which parts of the code have been executed,
+# then analyzes the source to identify code that could have been executed but was not.
+# https://coverage.readthedocs.io/en/latest/
+coverage = "^7.4.4"
 # Allows you to use fixtures in @pytest.mark.parametrize.
 # https://pypi.org/project/pytest-lazy-fixtures/
 pytest-lazy-fixtures = "^1.0.7"
@@ -144,11 +146,11 @@ extend-select = [
   "DJ",
   # https://docs.astral.sh/ruff/rules/#flake8-print-t20
   "T20",
-  # https://docs.astral.sh/ruff/rules/#flake8-simplify-sim
+  # https://docs.astral.sh/ruff/rules/#flake8-pytest-style-pt
   "PT",
   # https://docs.astral.sh/ruff/rules/#flake8-simplify-sim
   "SIM",
-  # https://docs.astral.sh/ruff/rules/#flake8-simplify-sim
+  # https://docs.astral.sh/ruff/rules/#flake8-use-pathlib-pth
   "PTH",
   # https://docs.astral.sh/ruff/rules/#flake8-todos-td
   "TD",
@@ -264,9 +266,6 @@ ignore = [
 addopts = [
     "--capture=no",
     "--ff",
-    "--cov=fastapi_rest_framework",
-    "--cov-report=html",
-    "--cov-report=term"
 ]
 # skip all files inside following dirs
 norecursedirs = [
@@ -278,6 +277,9 @@ asyncio_mode = "auto"
 
 [tool.coverage.run]
 omit = []
+
+[tool.coverage.report]
+include = ["fastapi_rest_framework/**"]
 
 # https://docformatter.readthedocs.io/en/latest/configuration.html#
 [tool.docformatter]
