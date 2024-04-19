@@ -160,3 +160,6 @@ cython_debug/
 
 # pyenv's file for specifying local Python version
 .python-version
+
+# Ignore localstack volume files
+localstack_volume/

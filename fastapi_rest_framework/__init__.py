@@ -97,11 +97,15 @@ with contextlib.suppress(ImportError):
 with contextlib.suppress(ImportError):
     from . import jwt
 
+with contextlib.suppress(ImportError):
+    from . import s3
+
 
 __all__ = (
     "sqlalchemy",
     "jwt",
     "testing",
+    "s3",
     "ActionResponsesMap",
     "ActionMixin",
     "AnyBaseAPIView",

@@ -6,10 +6,12 @@ import typing
 import fastapi
 import httpx
 import pytest
+import saritasa_s3_tools
 import saritasa_sqlalchemy_tools
 import sqlalchemy
 
 import example_app
+import example_app.dependencies
 import fastapi_rest_framework
 
 from . import factories, shortcuts
@@ -182,11 +184,15 @@ def db_session_dependency(
 @pytest.fixture
 def fastapi_app(
     db_session_dependency: saritasa_sqlalchemy_tools.SessionFactory,
+    async_s3_client: saritasa_s3_tools.AsyncS3Client,
 ) -> fastapi.FastAPI:
     """Override app dependencies."""
     example_app.fastapi_app.dependency_overrides[
         example_app.db.get_db_session
     ] = db_session_dependency
+    example_app.fastapi_app.dependency_overrides[
+        example_app.dependencies.S3ClientDependencyType
+    ] = lambda: async_s3_client
 
     return example_app.fastapi_app
 

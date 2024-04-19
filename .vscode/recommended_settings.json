@@ -1,25 +1,27 @@
 {
-    "files.exclude": {
-      "**/__pycache__": true,
-      "**/.pytest_cache": true,
-      "**/.mypy_cache": true,
-      "**/htmlcov": true,
-    },
+  "files.exclude": {
+    "**/__pycache__": true,
+    "**/.pytest_cache": true,
+    "**/.mypy_cache": true,
+    "**/.ruff_cache": true,
+    "**/localstack_volume": true,
+    "**/htmlcov": true,
+  },
 
-    "editor.rulers": [79],
+  "editor.rulers": [79],
 
-    "editor.bracketPairColorization.enabled": true,
+  "editor.bracketPairColorization.enabled": true,
 
-    "python.analysis.typeCheckingMode": "basic",
+  "python.analysis.typeCheckingMode": "basic",
 
-    "python.analysis.inlayHints.functionReturnTypes": true,
-    "mypy.enabled": false,
+  "python.analysis.inlayHints.functionReturnTypes": true,
+  "mypy.enabled": false,
 
-    "python.testing.unittestEnabled": false,
-    "python.testing.pytestEnabled": true,
+  "python.testing.unittestEnabled": false,
+  "python.testing.pytestEnabled": true,
 
-    "[python]": {
-      "editor.formatOnSave": true,
-      "editor.defaultFormatter": "charliermarsh.ruff"
-    }
+  "[python]": {
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "charliermarsh.ruff"
   }
+}

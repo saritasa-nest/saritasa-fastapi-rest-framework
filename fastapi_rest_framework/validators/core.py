@@ -75,6 +75,7 @@ class ValidationError(Exception):
         error_message: str | None = None,
         all_errors: list[typing.Self] | None = None,
         context: common_types.ContextType | None = None,
+        loc: types.LOCType | None = None,
     ) -> None:
         self.error_type = error_type
         self.error_message = error_message
@@ -84,7 +85,7 @@ class ValidationError(Exception):
         # some objects and according to this data frontend will display
         # user-friendly error.
         self.context = context
-        self.loc: types.LOCType
+        self.loc = loc
         if self.all_errors and self.error_message:
             raise ValueError(  # pragma: no cover
                 "ValidationError can only have error or errors",
@@ -101,7 +102,7 @@ class ValidationError(Exception):
         """Transform validation error in schema."""
         if self.error_message and self.error_type:
             return schemas.ValidationErrorSchema(
-                field=".".join(map(str, self.loc)),
+                field=".".join(map(str, self.loc or ())),
                 type=self.error_type,
                 detail=self.error_message,
                 context=self.context,

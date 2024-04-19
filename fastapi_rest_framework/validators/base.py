@@ -50,7 +50,7 @@ class RegexValidator(core.BaseValidator[str, str]):
     ) -> str | None:
         if not value:
             return value
-        if not re.match(self.pattern, value):
+        if not re.match(pattern=self.pattern, string=value):
             raise core.ValidationError(
                 error_type=core.ValidationErrorType.invalid,
                 error_message=self.human_error,

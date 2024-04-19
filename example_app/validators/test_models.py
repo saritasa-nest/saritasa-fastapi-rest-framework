@@ -105,6 +105,8 @@ class TestModelValidator(
                     ),
                 ),
             ),
+            "file": (fastapi_rest_framework.s3.S3URLValidator(),),
+            "files": (fastapi_rest_framework.s3.S3URLValidator(),),
         }
 
 

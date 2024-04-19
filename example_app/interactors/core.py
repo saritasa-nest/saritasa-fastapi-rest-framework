@@ -28,3 +28,14 @@ class InteractorHooksMixin(
     typing.Generic[saritasa_sqlalchemy_tools.BaseModelT,],
 ):
     """Base hooks mixin."""
+
+
+class S3InteractorMixin(
+    fastapi_rest_framework.s3.S3InteractorMixin[
+        saritasa_sqlalchemy_tools.BaseModelT,
+    ],
+    typing.Generic[saritasa_sqlalchemy_tools.BaseModelT,],
+):
+    """S3 mixin."""
+
+    upload_folder = "upload"

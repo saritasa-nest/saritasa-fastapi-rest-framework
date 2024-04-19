@@ -8,12 +8,21 @@ import sqlalchemy
 
 import fastapi_rest_framework
 
-from .. import interactors, repositories, schemas, security, validators
+from .. import (
+    dependencies,
+    interactors,
+    repositories,
+    schemas,
+    security,
+    validators,
+)
 from . import core
 
 
 class Context(fastapi_rest_framework.Context):
     """Representation of context for test_models API."""
+
+    s3_client: dependencies.S3ClientDependencyType
 
 
 class Filters(core.Filters[repositories.TestModelRepository.model]):

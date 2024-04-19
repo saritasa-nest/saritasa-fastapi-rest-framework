@@ -43,17 +43,24 @@ pyjwt = {extras = ["crypto"], version = "<3", optional = true}
 # Python client for Sentry (https://sentry.io)
 # https://pypi.org/project/sentry-sdk/
 sentry-sdk = {version = "<2", optional = true}
+# Python humanize functions
+# https://python-humanize.readthedocs.io/en/latest/
+humanize = {version = "<5", optional = true}
 
 [tool.poetry.extras]
-all = ["pyjwt", "sentry-sdk"]
+all = ["pyjwt", "sentry-sdk", "humanize"]
 jwt = ["pyjwt"]
 sentry = ["sentry-sdk"]
+s3 = ["humanize"]
 
 [tool.poetry.group.dev.dependencies]
 # TODO: move it to optional once released
 # Tools For Sqlalchemy Used By Saritasa
 # https://github.com/saritasa-nest/saritasa-sqlalchemy-tools
 saritasa-sqlalchemy-tools = {git = "https://github.com/saritasa-nest/saritasa-sqlalchemy-tools.git", extras = ["auto_schema"], rev = "main"}
+# Tools For S3 Used By Saritasa
+# https://github.com/saritasa-nest/saritasa-s3-tools
+saritasa-s3-tools = {git = "https://github.com/saritasa-nest/saritasa-s3-tools.git", extras = ["async", "factory"], rev = "main"}
 # HTTPX is a fully featured HTTP client for Python 3, which provides sync and async APIs, and support for both HTTP/1.1 and HTTP/2.
 # https://www.python-httpx.org/
 httpx = {version ="^0.27.0"}
@@ -69,6 +76,10 @@ pre-commit = "^3.7.0"
 # http://www.pyinvoke.org/
 # https://github.com/saritasa-nest/saritasa-python-invocations/
 saritasa_invocations = "^1.1.0"
+# Uvicorn is an ASGI web server implementation for Python.
+# Used for launching example app
+# https://www.uvicorn.org/
+uvicorn = "^0.29.0"
 
 [tool.poetry.group.linters.dependencies]
 # Mypy is a static type checker for Python.
@@ -273,6 +284,13 @@ norecursedirs = [
     ".venv",
     "example_app",
 ]
+# Configuration for s3
+s3_endpoint_url = "https://localhost.localstack.cloud:4566"
+s3_region="us-west-1"
+s3_bucket="fastapi-rest-framework-files"
+s3_access_key="root"
+s3_secret_key="rootroot"
+# Configuration for asyncio
 asyncio_mode = "auto"
 
 [tool.coverage.run]

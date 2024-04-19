@@ -3,6 +3,7 @@ import fastapi
 import fastapi_rest_framework
 
 from . import (
+    config,
     db,
     models,
     repositories,
@@ -17,6 +18,7 @@ router = fastapi.APIRouter(
 router.include_router(views.TestModelAPIView.router)
 router.include_router(views.SoftDeleteTestModelAPIView.router)
 router.include_router(views.guarded_endpoint_router)
+router.include_router(views.S3GetParamsView.router)
 
 fastapi_app = fastapi.FastAPI(
     title="Test APP",

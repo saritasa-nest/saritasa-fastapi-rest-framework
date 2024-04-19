@@ -1,5 +1,9 @@
+import typing
+
 import pydantic
 import saritasa_sqlalchemy_tools
+
+import fastapi_rest_framework
 
 from .. import models
 
@@ -58,6 +62,8 @@ class TestModelListAutoSchema(saritasa_sqlalchemy_tools.ModelAutoSchema):
             "custom_property_nullable",
             "json_field",
             "json_field_nullable",
+            "file",
+            "files",
             (
                 "related_models_count",
                 int,
@@ -71,6 +77,10 @@ class TestModelListAutoSchema(saritasa_sqlalchemy_tools.ModelAutoSchema):
                 RelatedModelTestModelAutoSchema,
             ),
         )
+        extra_fields_validators: typing.ClassVar = {
+            "file": (fastapi_rest_framework.s3.add_auth_params_to_urls,),
+            "files": (fastapi_rest_framework.s3.add_auth_params_to_urls,),
+        }
 
 
 TestModelList = TestModelListAutoSchema.get_schema()
@@ -113,6 +123,8 @@ class TestModelDetailAutoSchema(saritasa_sqlalchemy_tools.ModelAutoSchema):
             "custom_property_nullable",
             "json_field",
             "json_field_nullable",
+            "file",
+            "files",
             (
                 "related_models_count",
                 int,
@@ -138,6 +150,10 @@ class TestModelDetailAutoSchema(saritasa_sqlalchemy_tools.ModelAutoSchema):
                 RelatedModelTestModelAutoSchema,
             ),
         )
+        extra_fields_validators: typing.ClassVar = {
+            "file": (fastapi_rest_framework.s3.add_auth_params_to_urls,),
+            "files": (fastapi_rest_framework.s3.add_auth_params_to_urls,),
+        }
 
 
 TestModelDetail = TestModelDetailAutoSchema.get_schema()
@@ -179,6 +195,8 @@ class TestModelCreateRequestAutoSchema(
             "json_field_nullable",
             "date_range",
             "date_range_nullable",
+            "file",
+            "files",
             ("m2m_related_models_ids", list[int]),
         )
 
@@ -222,6 +240,8 @@ class TestModelBulkCreateRequestAutoSchema(
             "json_field_nullable",
             "date_range",
             "date_range_nullable",
+            "file",
+            "files",
         )
 
 
@@ -264,6 +284,8 @@ class TestModelUpdateRequestAutoSchema(
             "json_field_nullable",
             "date_range",
             "date_range_nullable",
+            "file",
+            "files",
             ("m2m_related_models_ids", list[int]),
         )
 
