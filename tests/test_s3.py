@@ -23,11 +23,11 @@ def get_s3_params_url() -> str:
     ],
 )
 async def test_auth_validation(
-    auth_api_client_factory: shortcuts.AuthApiClientFactory,
+    api_client_factory: shortcuts.AuthApiClientFactory,
     user: shortcuts.UserData,
 ) -> None:
     """Test that anon user won't be able to get params."""
-    response = await auth_api_client_factory(user).post(
+    response = await api_client_factory(user).post(
         get_s3_params_url(),
         json=example_app.views.S3GetParamsView()
         .generate_request_params_schema()(
@@ -39,7 +39,7 @@ async def test_auth_validation(
         .model_dump(mode="json"),
     )
     if user is None:
-        response_data = fastapi_rest_framework.testing.extract_general_errors_from_response(  # noqa
+        response_data = fastapi_rest_framework.testing.extract_general_errors_from_response(  # noqa: E501
             response=response,
             expected_status=http.HTTPStatus.FORBIDDEN,
         )
@@ -61,11 +61,11 @@ async def test_auth_validation(
     ],
 )
 async def test_anon_auth_validation(
-    auth_api_client_factory: shortcuts.AuthApiClientFactory,
+    api_client_factory: shortcuts.AuthApiClientFactory,
     user: shortcuts.UserData,
 ) -> None:
     """Test that if no auth config was set, anyone could upload file."""
-    response = await auth_api_client_factory(user).post(
+    response = await api_client_factory(user).post(
         get_s3_params_url(),
         json=example_app.views.S3GetParamsView()
         .generate_request_params_schema()(
@@ -90,12 +90,12 @@ async def test_anon_auth_validation(
     ],
 )
 async def test_content_length_validation(
-    auth_api_client_factory: shortcuts.AuthApiClientFactory,
+    api_client_factory: shortcuts.AuthApiClientFactory,
     user_jwt_data: shortcuts.UserData,
     content_length: int,
 ) -> None:
     """Test that user need set correct content_length."""
-    response = await auth_api_client_factory(user_jwt_data).post(
+    response = await api_client_factory(user_jwt_data).post(
         get_s3_params_url(),
         json=example_app.views.S3GetParamsView()
         .generate_request_params_schema()(
@@ -117,11 +117,11 @@ async def test_content_length_validation(
 
 
 async def test_content_type_validation(
-    auth_api_client_factory: shortcuts.AuthApiClientFactory,
+    api_client_factory: shortcuts.AuthApiClientFactory,
     user_jwt_data: shortcuts.UserData,
 ) -> None:
     """Test that user need set correct content_type."""
-    response = await auth_api_client_factory(user_jwt_data).post(
+    response = await api_client_factory(user_jwt_data).post(
         get_s3_params_url(),
         json=example_app.views.S3GetParamsView()
         .generate_request_params_schema()(
@@ -150,11 +150,11 @@ async def test_content_type_validation(
     ],
 )
 async def test_all_files_allowed_validation(
-    auth_api_client_factory: shortcuts.AuthApiClientFactory,
+    api_client_factory: shortcuts.AuthApiClientFactory,
     user: shortcuts.UserData,
 ) -> None:
     """Test that all files can be allowed."""
-    response = await auth_api_client_factory(user).post(
+    response = await api_client_factory(user).post(
         get_s3_params_url(),
         json=example_app.views.S3GetParamsView()
         .generate_request_params_schema()(
@@ -179,11 +179,11 @@ async def test_all_files_allowed_validation(
     ],
 )
 async def test_all_file_sizes_allowed_validation(
-    auth_api_client_factory: shortcuts.AuthApiClientFactory,
+    api_client_factory: shortcuts.AuthApiClientFactory,
     user: shortcuts.UserData,
 ) -> None:
     """Test that all files can be allowed."""
-    response = await auth_api_client_factory(user).post(
+    response = await api_client_factory(user).post(
         get_s3_params_url(),
         json=example_app.views.S3GetParamsView()
         .generate_request_params_schema()(
@@ -202,8 +202,8 @@ async def test_all_file_sizes_allowed_validation(
 
 async def test_create_instance_with_file(
     test_model: example_app.models.TestModel,
-    auth_api_client_factory: shortcuts.AuthApiClientFactory,
-    test_model_lazy_url: fastapi_rest_framework.testing.LazyUrl,
+    api_client_factory: shortcuts.AuthApiClientFactory,
+    lazy_url: fastapi_rest_framework.testing.LazyUrl,
     user_jwt_data: shortcuts.UserData,
     async_s3_client: saritasa_s3_tools.AsyncS3Client,
 ) -> None:
@@ -217,7 +217,7 @@ async def test_create_instance_with_file(
         schema.file,
         file_key,
     ) = await fastapi_rest_framework.s3.testing.upload_file_to_s3(
-        api_client=auth_api_client_factory(user_jwt_data),
+        api_client=api_client_factory(user_jwt_data),
         config="all_file_types",
         file_path=__file__,
     )
@@ -226,8 +226,8 @@ async def test_create_instance_with_file(
         async_s3_client,
         file_key,
     )
-    response = await auth_api_client_factory(user_jwt_data).post(
-        test_model_lazy_url(action_name="create"),
+    response = await api_client_factory(user_jwt_data).post(
+        lazy_url(action_name="create"),
         json=schema.model_dump(mode="json"),
     )
     response_data = (
@@ -249,8 +249,8 @@ async def test_create_instance_with_file(
 
 async def test_update_instance_with_file(
     test_model: example_app.models.TestModel,
-    auth_api_client_factory: shortcuts.AuthApiClientFactory,
-    test_model_lazy_url: fastapi_rest_framework.testing.LazyUrl,
+    api_client_factory: shortcuts.AuthApiClientFactory,
+    lazy_url: fastapi_rest_framework.testing.LazyUrl,
     user_jwt_data: shortcuts.UserData,
     async_s3_client: saritasa_s3_tools.AsyncS3Client,
 ) -> None:
@@ -264,7 +264,7 @@ async def test_update_instance_with_file(
         schema.file,
         file_key,
     ) = await fastapi_rest_framework.s3.testing.upload_file_to_s3(
-        api_client=auth_api_client_factory(user_jwt_data),
+        api_client=api_client_factory(user_jwt_data),
         config="all_file_types",
         file_path=__file__,
     )
@@ -273,8 +273,8 @@ async def test_update_instance_with_file(
         async_s3_client,
         file_key,
     )
-    response = await auth_api_client_factory(user_jwt_data).put(
-        test_model_lazy_url(
+    response = await api_client_factory(user_jwt_data).put(
+        lazy_url(
             action_name="update",
             pk=test_model.pk,
         ),
@@ -298,8 +298,8 @@ async def test_update_instance_with_file(
 
 async def test_update_instance_with_non_existent_file(
     test_model: example_app.models.TestModel,
-    auth_api_client_factory: shortcuts.AuthApiClientFactory,
-    test_model_lazy_url: fastapi_rest_framework.testing.LazyUrl,
+    api_client_factory: shortcuts.AuthApiClientFactory,
+    lazy_url: fastapi_rest_framework.testing.LazyUrl,
     user_jwt_data: shortcuts.UserData,
     async_s3_client: saritasa_s3_tools.AsyncS3Client,
 ) -> None:
@@ -311,8 +311,8 @@ async def test_update_instance_with_non_existent_file(
     schema.text_nullable = "TestValue"
     schema.file = "https://www.google.com"
     schema.files = [schema.file, schema.file]
-    response = await auth_api_client_factory(user_jwt_data).put(
-        test_model_lazy_url(
+    response = await api_client_factory(user_jwt_data).put(
+        lazy_url(
             action_name="update",
             pk=test_model.pk,
         ),

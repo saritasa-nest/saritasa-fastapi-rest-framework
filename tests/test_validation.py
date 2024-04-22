@@ -9,15 +9,15 @@ from . import factories, shortcuts
 
 
 async def test_validation_empty_body(
-    test_model_lazy_url: fastapi_rest_framework.testing.LazyUrl,
-    auth_api_client_factory: shortcuts.AuthApiClientFactory,
+    lazy_url: fastapi_rest_framework.testing.LazyUrl,
+    api_client_factory: shortcuts.AuthApiClientFactory,
     user_jwt_data: shortcuts.UserData | None,
     repository: example_app.repositories.TestModelRepository,
     test_model: example_app.models.TestModel,
 ) -> None:
     """Test create when user sends empty body."""
-    response = await auth_api_client_factory(user_jwt_data).post(
-        test_model_lazy_url(action_name="create"),
+    response = await api_client_factory(user_jwt_data).post(
+        lazy_url(action_name="create"),
         json="{}",
     )
 
@@ -84,8 +84,8 @@ async def test_validation_empty_body(
     ],
 )
 async def test_create_api_invalid_types(
-    test_model_lazy_url: fastapi_rest_framework.testing.LazyUrl,
-    auth_api_client_factory: shortcuts.AuthApiClientFactory,
+    lazy_url: fastapi_rest_framework.testing.LazyUrl,
+    api_client_factory: shortcuts.AuthApiClientFactory,
     user_jwt_data: shortcuts.UserData | None,
     repository: example_app.repositories.TestModelRepository,
     test_model: example_app.models.TestModel,
@@ -97,8 +97,8 @@ async def test_create_api_invalid_types(
         test_model,
     )
     setattr(schema, field, None)
-    response = await auth_api_client_factory(user_jwt_data).post(
-        test_model_lazy_url(action_name="create"),
+    response = await api_client_factory(user_jwt_data).post(
+        lazy_url(action_name="create"),
         json=schema.model_dump(mode="json"),
     )
     response_data = fastapi_rest_framework.testing.extract_error_from_response(
@@ -109,8 +109,8 @@ async def test_create_api_invalid_types(
 
 
 async def test_create_api_invalid_list_type_item(
-    test_model_lazy_url: fastapi_rest_framework.testing.LazyUrl,
-    auth_api_client_factory: shortcuts.AuthApiClientFactory,
+    lazy_url: fastapi_rest_framework.testing.LazyUrl,
+    api_client_factory: shortcuts.AuthApiClientFactory,
     user_jwt_data: shortcuts.UserData | None,
     repository: example_app.repositories.TestModelRepository,
     test_model: example_app.models.TestModel,
@@ -123,8 +123,8 @@ async def test_create_api_invalid_list_type_item(
     # Ignore pydantic warning about int and str types
     with warnings.catch_warnings(action="ignore"):
         json_data = schema.model_dump(mode="json")
-    response = await auth_api_client_factory(user_jwt_data).post(
-        test_model_lazy_url(action_name="create"),
+    response = await api_client_factory(user_jwt_data).post(
+        lazy_url(action_name="create"),
         json=json_data,
     )
     response_data = fastapi_rest_framework.testing.extract_error_from_response(
@@ -137,8 +137,8 @@ async def test_create_api_invalid_list_type_item(
 
 
 async def test_create_api_failed_validation(
-    test_model_lazy_url: fastapi_rest_framework.testing.LazyUrl,
-    auth_api_client_factory: shortcuts.AuthApiClientFactory,
+    lazy_url: fastapi_rest_framework.testing.LazyUrl,
+    api_client_factory: shortcuts.AuthApiClientFactory,
     user_jwt_data: shortcuts.UserData | None,
     repository: example_app.repositories.TestModelRepository,
     test_model: example_app.models.TestModel,
@@ -149,8 +149,8 @@ async def test_create_api_failed_validation(
     )
     schema.related_model_id = -1
     schema.related_model_id_nullable = -1
-    response = await auth_api_client_factory(user_jwt_data).post(
-        test_model_lazy_url(action_name="create"),
+    response = await api_client_factory(user_jwt_data).post(
+        lazy_url(action_name="create"),
         json=schema.model_dump(mode="json"),
     )
     response_data = fastapi_rest_framework.testing.extract_error_from_response(
@@ -166,8 +166,8 @@ async def test_create_api_failed_validation(
 
 
 async def test_create_api_failed_validation_list(
-    test_model_lazy_url: fastapi_rest_framework.testing.LazyUrl,
-    auth_api_client_factory: shortcuts.AuthApiClientFactory,
+    lazy_url: fastapi_rest_framework.testing.LazyUrl,
+    api_client_factory: shortcuts.AuthApiClientFactory,
     user_jwt_data: shortcuts.UserData | None,
     repository: example_app.repositories.TestModelRepository,
     test_model: example_app.models.TestModel,
@@ -178,8 +178,8 @@ async def test_create_api_failed_validation_list(
     )
     schema.text_list = ["1", "invalid", "2"]
     schema.text_list_nullable = ["1", "2", "invalid"]
-    response = await auth_api_client_factory(user_jwt_data).post(
-        test_model_lazy_url(action_name="create"),
+    response = await api_client_factory(user_jwt_data).post(
+        lazy_url(action_name="create"),
         json=schema.model_dump(mode="json"),
     )
     response_data = fastapi_rest_framework.testing.extract_error_from_response(
@@ -195,8 +195,8 @@ async def test_create_api_failed_validation_list(
 
 
 async def test_create_api_unique_together(
-    test_model_lazy_url: fastapi_rest_framework.testing.LazyUrl,
-    auth_api_client_factory: shortcuts.AuthApiClientFactory,
+    lazy_url: fastapi_rest_framework.testing.LazyUrl,
+    api_client_factory: shortcuts.AuthApiClientFactory,
     user_jwt_data: shortcuts.UserData | None,
     repository: example_app.repositories.TestModelRepository,
     test_model: example_app.models.TestModel,
@@ -207,8 +207,8 @@ async def test_create_api_unique_together(
         test_model,
     )
     schema.text_unique = "TextUnique"
-    response = await auth_api_client_factory(user_jwt_data).post(
-        test_model_lazy_url(action_name="create"),
+    response = await api_client_factory(user_jwt_data).post(
+        lazy_url(action_name="create"),
         json=schema.model_dump(mode="json"),
     )
     response_data = fastapi_rest_framework.testing.extract_error_from_response(
@@ -222,8 +222,8 @@ async def test_create_api_unique_together(
 
 
 async def test_update_api_unique_together(
-    test_model_lazy_url: fastapi_rest_framework.testing.LazyUrl,
-    auth_api_client_factory: shortcuts.AuthApiClientFactory,
+    lazy_url: fastapi_rest_framework.testing.LazyUrl,
+    api_client_factory: shortcuts.AuthApiClientFactory,
     user_jwt_data: shortcuts.UserData | None,
     repository: example_app.repositories.TestModelRepository,
     test_model: example_app.models.TestModel,
@@ -238,8 +238,8 @@ async def test_update_api_unique_together(
     )
     schema.text = new_test_model.text
     schema.text_nullable = new_test_model.text_nullable
-    response = await auth_api_client_factory(user_jwt_data).put(
-        test_model_lazy_url(action_name="update", pk=test_model.id),
+    response = await api_client_factory(user_jwt_data).put(
+        lazy_url(action_name="update", pk=test_model.id),
         json=schema.model_dump(mode="json"),
     )
     response_data = fastapi_rest_framework.testing.extract_error_from_response(
@@ -253,8 +253,8 @@ async def test_update_api_unique_together(
 
 
 async def test_create_api_regex_validation(
-    test_model_lazy_url: fastapi_rest_framework.testing.LazyUrl,
-    auth_api_client_factory: shortcuts.AuthApiClientFactory,
+    lazy_url: fastapi_rest_framework.testing.LazyUrl,
+    api_client_factory: shortcuts.AuthApiClientFactory,
     user_jwt_data: shortcuts.UserData | None,
     repository: example_app.repositories.TestModelRepository,
     test_model: example_app.models.TestModel,
@@ -265,8 +265,8 @@ async def test_create_api_regex_validation(
         test_model,
     )
     schema.text_nullable = "123456"
-    response = await auth_api_client_factory(user_jwt_data).post(
-        test_model_lazy_url(action_name="create"),
+    response = await api_client_factory(user_jwt_data).post(
+        lazy_url(action_name="create"),
         json=schema.model_dump(mode="json"),
     )
     response_data = fastapi_rest_framework.testing.extract_error_from_response(
@@ -277,8 +277,8 @@ async def test_create_api_regex_validation(
 
 
 async def test_create_api_unique_by_field_validation(
-    test_model_lazy_url: fastapi_rest_framework.testing.LazyUrl,
-    auth_api_client_factory: shortcuts.AuthApiClientFactory,
+    lazy_url: fastapi_rest_framework.testing.LazyUrl,
+    api_client_factory: shortcuts.AuthApiClientFactory,
     user_jwt_data: shortcuts.UserData | None,
     repository: example_app.repositories.TestModelRepository,
     test_model: example_app.models.TestModel,
@@ -288,8 +288,8 @@ async def test_create_api_unique_by_field_validation(
     schema = example_app.views.TestModelAPIView.create_schema.model_validate(
         test_model,
     )
-    response = await auth_api_client_factory(user_jwt_data).post(
-        test_model_lazy_url(action_name="create"),
+    response = await api_client_factory(user_jwt_data).post(
+        lazy_url(action_name="create"),
         json=schema.model_dump(mode="json"),
     )
     response_data = fastapi_rest_framework.testing.extract_error_from_response(
@@ -303,8 +303,8 @@ async def test_create_api_unique_by_field_validation(
 
 
 async def test_create_api_invalid_fk(
-    test_model_lazy_url: fastapi_rest_framework.testing.LazyUrl,
-    auth_api_client_factory: shortcuts.AuthApiClientFactory,
+    lazy_url: fastapi_rest_framework.testing.LazyUrl,
+    api_client_factory: shortcuts.AuthApiClientFactory,
     user_jwt_data: shortcuts.UserData | None,
     repository: example_app.repositories.TestModelRepository,
     test_model: example_app.models.TestModel,
@@ -315,8 +315,8 @@ async def test_create_api_invalid_fk(
         test_model,
     )
     schema.related_model_id = -1
-    response = await auth_api_client_factory(user_jwt_data).post(
-        test_model_lazy_url(action_name="create"),
+    response = await api_client_factory(user_jwt_data).post(
+        lazy_url(action_name="create"),
         json=schema.model_dump(mode="json"),
     )
     response_data = fastapi_rest_framework.testing.extract_error_from_response(

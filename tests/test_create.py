@@ -16,8 +16,8 @@ from . import factories, shortcuts
     ],
 )
 async def test_create_api(
-    test_model_lazy_url: fastapi_rest_framework.testing.LazyUrl,
-    auth_api_client_factory: shortcuts.AuthApiClientFactory,
+    lazy_url: fastapi_rest_framework.testing.LazyUrl,
+    api_client_factory: shortcuts.AuthApiClientFactory,
     user: shortcuts.UserData | None,
     repository: example_app.repositories.TestModelRepository,
     test_model: example_app.models.TestModel,
@@ -40,8 +40,8 @@ async def test_create_api(
     )
     schema.text_unique = "TextUnique"
     schema.text_nullable = "TestValue"
-    response = await auth_api_client_factory(user).post(
-        test_model_lazy_url(action_name="create"),
+    response = await api_client_factory(user).post(
+        lazy_url(action_name="create"),
         json=schema.model_dump(mode="json"),
     )
     if not fastapi_rest_framework.testing.validate_auth_required_response(
@@ -75,7 +75,7 @@ async def test_create_api(
 )
 async def test_create_api_custom_detail_response(
     soft_delete_test_model_lazy_url: fastapi_rest_framework.testing.LazyUrl,
-    auth_api_client_factory: shortcuts.AuthApiClientFactory,
+    api_client_factory: shortcuts.AuthApiClientFactory,
     user: shortcuts.UserData | None,
     soft_delete_repository: example_app.repositories.TestModelRepository,
     soft_delete_test_model: example_app.models.SoftDeleteTestModel,
@@ -85,7 +85,7 @@ async def test_create_api_custom_detail_response(
         soft_delete_test_model,
     )
     schema.text_unique = "TextUnique"
-    response = await auth_api_client_factory(user).post(
+    response = await api_client_factory(user).post(
         soft_delete_test_model_lazy_url(action_name="create"),
         json=schema.model_dump(mode="json"),
     )

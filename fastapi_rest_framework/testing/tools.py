@@ -1,4 +1,3 @@
-import collections.abc
 import http
 import json
 import typing
@@ -11,30 +10,17 @@ import httpx
 import pydantic
 import starlette.datastructures
 
-from . import validators, views
+from .. import validators, views
 
-ResponseT = typing.TypeVar("ResponseT", bound=pydantic.BaseModel)
-
-LazyUrl: typing.TypeAlias = collections.abc.Callable[
-    ...,
-    starlette.datastructures.URLPath,
-]
+ResponseT = typing.TypeVar(
+    "ResponseT",
+    bound=pydantic.BaseModel,
+)
 
 
 def lazy_url(
     app: fastapi.FastAPI,
-    view: type[
-        views.BaseAPIView[
-            typing.Any,
-            typing.Any,
-            typing.Any,
-            typing.Any,
-            typing.Any,
-            typing.Any,
-            typing.Any,
-            typing.Any,
-        ]
-    ],
+    view: type[views.AnyBaseAPIView],
     action_name: str,
     **params: typing.Any,
 ) -> starlette.datastructures.URLPath:

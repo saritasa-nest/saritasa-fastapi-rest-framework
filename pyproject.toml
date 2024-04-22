@@ -30,6 +30,9 @@ classifiers = [
   "Topic :: Software Development :: Libraries :: Python Modules",
 ]
 
+[tool.poetry.plugins.pytest11]
+fastapi_rest_framework = "fastapi_rest_framework.testing.plugin"
+
 [tool.poetry.dependencies]
 python = "^3.11"
 # FastAPI framework, high performance, easy to learn, fast to code, ready for production
@@ -88,13 +91,6 @@ mypy = "^1.9.0"
 
 [tool.poetry.group.test.dependencies]
 pytest = "^8.1.1"
-# pytest-asyncio is a pytest plugin. It facilitates testing of code that
-# uses the asyncio library.
-# https://pytest-asyncio.readthedocs.io/en/latest/
-pytest-asyncio = "^0.21.1"
-# Database testing fixtures using the SQLAlchemy asyncio API
-# https://pypi.org/project/pytest-async-sqlalchemy/
-pytest-async-sqlalchemy = "^0.2.0"
 # To prettify pytest output
 pytest-sugar = "^1.0.0"
 # Coverage.py is a tool for measuring code coverage of Python programs.
@@ -213,6 +209,10 @@ ignore = [
   # https://docs.astral.sh/ruff/rules/S101
   "S101",
 ]
+"**/testing/**" = [
+  # https://docs.astral.sh/ruff/rules/S101
+  "S101",
+]
 [tool.ruff.lint.isort]
 force-wrap-aliases = true
 split-on-trailing-comma = true
@@ -284,14 +284,19 @@ norecursedirs = [
     ".venv",
     "example_app",
 ]
+# Configutation for fastapi
+fastapi_app_path="example_app.fastapi_app"
+# Configuration for database
+sqlalchemy_database_driver="postgresql+asyncpg"
+sqlalchemy_username="fastapi-rest-framework-user"
+sqlalchemy_password="manager"
+sqlalchemy_host="postgres"
 # Configuration for s3
 s3_endpoint_url = "https://localhost.localstack.cloud:4566"
 s3_region="us-west-1"
 s3_bucket="fastapi-rest-framework-files"
 s3_access_key="root"
 s3_secret_key="rootroot"
-# Configuration for asyncio
-asyncio_mode = "auto"
 
 [tool.coverage.run]
 omit = []
