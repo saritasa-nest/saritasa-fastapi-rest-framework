@@ -219,6 +219,7 @@ class ActionMixin(
                 **request_context_dump,
             )
 
+        action.__doc__ = func.__doc__
         if not detail:
             return action
 
@@ -303,4 +304,5 @@ class ActionMixin(
                 **request_context_dump,
             )
 
+        action_detail.__doc__ = func.__doc__
         return action_detail

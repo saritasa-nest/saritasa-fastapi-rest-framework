@@ -8,6 +8,7 @@ from .. import security
 
 router = fastapi.APIRouter(
     prefix="/guarded-endpoint",
+    tags=["Guarded endpoint"],
 )
 
 

@@ -7,6 +7,7 @@ from . import core
 
 
 class TestModelInteractor(
+    core.S3InteractorMixin[repositories.TestModelRepository.model],
     core.Interactor[
         repositories.TestModelRepository.model,
         repositories.TestModelRepository,
@@ -14,6 +15,10 @@ class TestModelInteractor(
 ):
     """Save test model api data into database."""
 
+    s3_files_fields = (
+        "file",
+        "files",
+    )
     model = repositories.TestModelRepository.model
 
     m2m_create_update_config: typing.ClassVar[

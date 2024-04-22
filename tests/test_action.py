@@ -115,3 +115,20 @@ async def test_action_detail_api(
     fastapi_rest_framework.testing.validate_no_content(response)
     assert (instance := await repository.fetch_first(id=test_model.id))
     assert instance.text_unique == "text_unique_action_detail"
+
+
+async def test_action_detail_api_not_found(
+    test_model_lazy_url: fastapi_rest_framework.testing.LazyUrl,
+    auth_api_client_factory: shortcuts.AuthApiClientFactory,
+    user_jwt_data: shortcuts.UserData | None,
+    repository: example_app.repositories.TestModelRepository,
+    test_model: example_app.models.TestModel,
+) -> None:
+    """Test detail action api endpoint when instance is not found."""
+    response = await auth_api_client_factory(user_jwt_data).put(
+        test_model_lazy_url(
+            action_name="action-detail",
+            pk=-1,
+        ),
+    )
+    fastapi_rest_framework.testing.validate_not_found(response)

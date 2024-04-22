@@ -234,6 +234,16 @@ class FieldsMixin:
         nullable=True,
     )
 
+    file: sqlalchemy.orm.Mapped[str] = sqlalchemy.orm.mapped_column(
+        sqlalchemy.Text,
+        nullable=False,
+        server_default="",
+    )
+    files: sqlalchemy.orm.Mapped[list[str]] = sqlalchemy.orm.mapped_column(
+        sqlalchemy.ARRAY(sqlalchemy.String),
+        nullable=False,
+    )
+
     @property
     def custom_property(self) -> str:
         """Implement property."""

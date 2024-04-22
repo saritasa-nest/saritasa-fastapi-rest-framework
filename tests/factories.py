@@ -1,11 +1,24 @@
 import datetime
 import typing
 
+import botocore.credentials
 import factory
 import factory.fuzzy
+import saritasa_s3_tools
 import saritasa_sqlalchemy_tools
 
 import example_app
+
+S3ImageFactory = saritasa_s3_tools.factory.S3ImageFileField(
+    s3_config="files",
+    s3_region=example_app.config.aws_region,
+    bucket=example_app.config.s3_bucket,
+    access_key_getter=lambda: botocore.credentials.Credentials(
+        access_key=example_app.config.aws_access_key,
+        secret_key=example_app.config.aws_secret_key,
+    ),
+    s3_endpoint_url_getter=lambda: example_app.config.aws_endpoint,
+)
 
 
 class UserJWTDataFactory(factory.Factory):
@@ -69,6 +82,8 @@ class TestModelFactory(
     timedelta = factory.Faker("time_delta")
     json_field = factory.Faker("pydict", allowed_types=[str, int, float])
     date_range = saritasa_sqlalchemy_tools.DateRangeFactory()
+    file = S3ImageFactory
+    files = factory.List([S3ImageFactory for _ in range(2)])
 
     class Meta:
         model = example_app.models.TestModel
@@ -125,6 +140,8 @@ class SoftDeleteTestModelFactory(
     timedelta = factory.Faker("time_delta")
     json_field = factory.Faker("pydict", allowed_types=[str, int, float])
     date_range = saritasa_sqlalchemy_tools.DateRangeFactory()
+    file = S3ImageFactory
+    files = factory.List([S3ImageFactory for _ in range(2)])
 
     class Meta:
         model = example_app.models.SoftDeleteTestModel

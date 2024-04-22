@@ -26,7 +26,11 @@ ns.configure(
         "saritasa_invocations": saritasa_invocations.Config(
             project_name="fastapi-rest-framework",
             docker=saritasa_invocations.DockerSettings(
-                main_containers=("postgres",),
+                main_containers=(
+                    "postgres",
+                    "localstack-services",
+                    "localstack-services-s3",
+                ),
             ),
         ),
     },

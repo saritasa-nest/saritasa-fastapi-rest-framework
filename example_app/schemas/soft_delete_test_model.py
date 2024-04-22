@@ -73,6 +73,8 @@ class SoftDeleteTestModelCreateUpdateRequestAutoSchema(
             "json_field_nullable",
             "date_range",
             "date_range_nullable",
+            "file",
+            "files",
         )
 
 
