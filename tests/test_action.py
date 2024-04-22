@@ -14,15 +14,15 @@ from . import factories, shortcuts
     ],
 )
 async def test_paginated_action_api(
-    test_model_lazy_url: fastapi_rest_framework.testing.LazyUrl,
-    auth_api_client_factory: shortcuts.AuthApiClientFactory,
+    lazy_url: fastapi_rest_framework.testing.LazyUrl,
+    api_client_factory: shortcuts.AuthApiClientFactory,
     user: shortcuts.UserData | None,
     repository: example_app.repositories.TestModelRepository,
     test_model_list: list[example_app.models.TestModel],
 ) -> None:
     """Test paginated action api endpoint."""
-    response = await auth_api_client_factory(user).get(
-        test_model_lazy_url(action_name="paginated-action"),
+    response = await api_client_factory(user).get(
+        lazy_url(action_name="paginated-action"),
     )
     if not fastapi_rest_framework.testing.validate_auth_required_response(
         response,
@@ -46,8 +46,8 @@ async def test_paginated_action_api(
     ],
 )
 async def test_action_api(
-    test_model_lazy_url: fastapi_rest_framework.testing.LazyUrl,
-    auth_api_client_factory: shortcuts.AuthApiClientFactory,
+    lazy_url: fastapi_rest_framework.testing.LazyUrl,
+    api_client_factory: shortcuts.AuthApiClientFactory,
     user: shortcuts.UserData | None,
     repository: example_app.repositories.TestModelRepository,
     test_model: example_app.models.TestModel,
@@ -71,8 +71,8 @@ async def test_action_api(
     )
     create_schema.text = "TextUnique1"
     create_schema.text_unique = "TextUnique1"
-    response = await auth_api_client_factory(user).post(
-        test_model_lazy_url(action_name="action"),
+    response = await api_client_factory(user).post(
+        lazy_url(action_name="action"),
         json=[
             create_schema.model_dump(mode="json"),
             update_schema.model_dump(mode="json"),
@@ -95,15 +95,15 @@ async def test_action_api(
     ],
 )
 async def test_action_detail_api(
-    test_model_lazy_url: fastapi_rest_framework.testing.LazyUrl,
-    auth_api_client_factory: shortcuts.AuthApiClientFactory,
+    lazy_url: fastapi_rest_framework.testing.LazyUrl,
+    api_client_factory: shortcuts.AuthApiClientFactory,
     user: shortcuts.UserData | None,
     repository: example_app.repositories.TestModelRepository,
     test_model: example_app.models.TestModel,
 ) -> None:
     """Test detail action api endpoint."""
-    response = await auth_api_client_factory(user).put(
-        test_model_lazy_url(
+    response = await api_client_factory(user).put(
+        lazy_url(
             action_name="action-detail",
             pk=test_model.id,
         ),
@@ -118,15 +118,15 @@ async def test_action_detail_api(
 
 
 async def test_action_detail_api_not_found(
-    test_model_lazy_url: fastapi_rest_framework.testing.LazyUrl,
-    auth_api_client_factory: shortcuts.AuthApiClientFactory,
+    lazy_url: fastapi_rest_framework.testing.LazyUrl,
+    api_client_factory: shortcuts.AuthApiClientFactory,
     user_jwt_data: shortcuts.UserData | None,
     repository: example_app.repositories.TestModelRepository,
     test_model: example_app.models.TestModel,
 ) -> None:
     """Test detail action api endpoint when instance is not found."""
-    response = await auth_api_client_factory(user_jwt_data).put(
-        test_model_lazy_url(
+    response = await api_client_factory(user_jwt_data).put(
+        lazy_url(
             action_name="action-detail",
             pk=-1,
         ),

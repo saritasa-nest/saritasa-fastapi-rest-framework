@@ -1,14 +1,10 @@
-import asyncio
 import collections.abc
 import functools
-import typing
 
 import fastapi
-import httpx
 import pytest
 import saritasa_s3_tools
 import saritasa_sqlalchemy_tools
-import sqlalchemy
 
 import example_app
 import example_app.dependencies
@@ -17,66 +13,15 @@ import fastapi_rest_framework
 from . import factories, shortcuts
 
 
-@pytest.fixture(scope="session")
-def event_loop() -> (
-    collections.abc.Generator[
-        asyncio.AbstractEventLoop,
-        typing.Any,
-        None,
-    ]
-):
-    """Override `event_loop` fixture to change scope to `session`.
-
-    Needed for pytest-async-sqlalchemy.
-
-    """
-    loop = asyncio.new_event_loop()
-    yield loop
-    loop.close()
+@pytest.fixture(scope="session", autouse=True)
+def anyio_backend() -> str:
+    """Specify async backend."""
+    return "asyncio"
 
 
 @pytest.fixture(scope="session")
-def database_url(request: pytest.FixtureRequest) -> str:
-    """Override database url.
-
-    Grab configs from settings and add support for pytest-xdist
-
-    """
-    worker_input = getattr(
-        request.config,
-        "workerinput",
-        {
-            "workerid": "",
-        },
-    )
-    return sqlalchemy.engine.URL(
-        drivername="postgresql+asyncpg",
-        username="fastapi-rest-framework-user",
-        password="manager",
-        host="postgres",
-        port=5432,
-        database="_".join(
-            filter(
-                None,
-                (
-                    "fastapi-rest-framework-dev",
-                    "test",
-                    worker_input["workerid"],
-                ),
-            ),
-        ),
-        query={},  # type: ignore
-    ).render_as_string(hide_password=False)
-
-
-@pytest.fixture(scope="session")
-def init_database() -> collections.abc.Callable[..., None]:
-    """Return callable object that will be called to init database.
-
-    Overridden fixture from `pytest-async-sqlalchemy package`.
-    https://github.com/igortg/pytest-async-sqlalchemy
-
-    """
+def manual_database_setup() -> collections.abc.Callable[..., None]:
+    """Return callable object that will be called to init database."""
     return saritasa_sqlalchemy_tools.BaseModel.metadata.create_all
 
 
@@ -139,32 +84,12 @@ async def soft_delete_repository(
     )
 
 
-@pytest.fixture(scope="session")
-def jwt_factory() -> collections.abc.Callable[[shortcuts.UserData], str]:
-    """Get factory for generating jwt token."""
-
-    def _get_jwt(user: shortcuts.UserData) -> str:
-        return example_app.security.JWTAuth.generate_jwt_for_user(user)
-
-    return _get_jwt
-
-
 @pytest.fixture
-async def auth_api_client_factory(
-    api_client: httpx.AsyncClient,
-    jwt_factory: collections.abc.Callable[[shortcuts.UserData], str],
-) -> shortcuts.AuthApiClientFactory:
-    """Add token to a client."""
-
-    def _auth_api_client_factory(
-        user: shortcuts.UserData | None,
-    ) -> httpx.AsyncClient:
-        if user:
-            api_client.headers["Authorization"] = f"Bearer {jwt_factory(user)}"
-        api_client.user = user  # type: ignore
-        return api_client
-
-    return _auth_api_client_factory
+def token_factory() -> collections.abc.Callable[[shortcuts.UserData], str]:
+    """Get factory for generating jwt token."""
+    return lambda user: example_app.security.JWTAuth.generate_jwt_for_user(
+        user=user,
+    )
 
 
 @pytest.fixture
@@ -183,31 +108,19 @@ def db_session_dependency(
 
 @pytest.fixture
 def fastapi_app(
+    fastapi_app: fastapi.FastAPI,
     db_session_dependency: saritasa_sqlalchemy_tools.SessionFactory,
     async_s3_client: saritasa_s3_tools.AsyncS3Client,
 ) -> fastapi.FastAPI:
     """Override app dependencies."""
-    example_app.fastapi_app.dependency_overrides[
-        example_app.db.get_db_session
-    ] = db_session_dependency
-    example_app.fastapi_app.dependency_overrides[
+    fastapi_app.dependency_overrides[example_app.db.get_db_session] = (
+        db_session_dependency
+    )
+    fastapi_app.dependency_overrides[
         example_app.dependencies.S3ClientDependencyType
     ] = lambda: async_s3_client
 
-    return example_app.fastapi_app
-
-
-@pytest.fixture
-async def api_client(
-    fastapi_app: fastapi.FastAPI,
-) -> collections.abc.AsyncGenerator[httpx.AsyncClient, None]:
-    """Fixture for test api client to make requests."""
-    async with httpx.AsyncClient(
-        transport=httpx.ASGITransport(app=fastapi_app),  # type: ignore
-        # This is needed, so won't need to write full url in tests
-        base_url="http://testapp",
-    ) as client:
-        yield client
+    return fastapi_app
 
 
 @pytest.fixture
@@ -217,15 +130,9 @@ def user_jwt_data() -> shortcuts.UserData:
 
 
 @pytest.fixture
-def test_model_lazy_url(
-    fastapi_app: fastapi.FastAPI,
-) -> fastapi_rest_framework.testing.LazyUrl:
-    """Generate shortcut to lazy urls."""
-    return functools.partial(
-        fastapi_rest_framework.testing.lazy_url,
-        app=fastapi_app,
-        view=example_app.views.TestModelAPIView,
-    )
+def view() -> type[fastapi_rest_framework.views.AnyBaseAPIView]:
+    """Get view for lazy_url."""
+    return example_app.views.TestModelAPIView
 
 
 @pytest.fixture

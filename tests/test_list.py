@@ -15,15 +15,15 @@ from . import factories, shortcuts
     ],
 )
 async def test_list_api(
-    test_model_lazy_url: fastapi_rest_framework.testing.LazyUrl,
-    auth_api_client_factory: shortcuts.AuthApiClientFactory,
+    lazy_url: fastapi_rest_framework.testing.LazyUrl,
+    api_client_factory: shortcuts.AuthApiClientFactory,
     user: shortcuts.UserData | None,
     repository: example_app.repositories.TestModelRepository,
     test_model_list: list[example_app.models.TestModel],
 ) -> None:
     """Test list API."""
-    response = await auth_api_client_factory(user).get(
-        test_model_lazy_url(action_name="list"),
+    response = await api_client_factory(user).get(
+        lazy_url(action_name="list"),
     )
     if not fastapi_rest_framework.testing.validate_auth_required_response(
         response,
@@ -68,16 +68,16 @@ async def test_list_api(
 )
 @pytest.mark.usefixtures("test_model_list")
 async def test_list_api_pagination(
-    test_model_lazy_url: fastapi_rest_framework.testing.LazyUrl,
-    auth_api_client_factory: shortcuts.AuthApiClientFactory,
+    lazy_url: fastapi_rest_framework.testing.LazyUrl,
+    api_client_factory: shortcuts.AuthApiClientFactory,
     user_jwt_data: shortcuts.UserData,
     limit: int,
     offset: int,
     expected_count: int,
 ) -> None:
     """Test that pagination for list API works correctly."""
-    response = await auth_api_client_factory(user_jwt_data).get(
-        test_model_lazy_url(action_name="list"),
+    response = await api_client_factory(user_jwt_data).get(
+        lazy_url(action_name="list"),
         params={
             "limit": limit,
             "offset": offset,
@@ -94,13 +94,13 @@ async def test_list_api_pagination(
 
 @pytest.mark.usefixtures("test_model_list")
 async def test_list_api_pagination_negative_offset(
-    test_model_lazy_url: fastapi_rest_framework.testing.LazyUrl,
-    auth_api_client_factory: shortcuts.AuthApiClientFactory,
+    lazy_url: fastapi_rest_framework.testing.LazyUrl,
+    api_client_factory: shortcuts.AuthApiClientFactory,
     user_jwt_data: shortcuts.UserData,
 ) -> None:
     """Test that pagination for list API works correctly on negative offset."""
-    response = await auth_api_client_factory(user_jwt_data).get(
-        test_model_lazy_url(action_name="list"),
+    response = await api_client_factory(user_jwt_data).get(
+        lazy_url(action_name="list"),
         params={
             "limit": 10,
             "offset": -10,
@@ -116,8 +116,8 @@ async def test_list_api_pagination_negative_offset(
 
 
 async def test_list_api_search_filter(
-    test_model_lazy_url: fastapi_rest_framework.testing.LazyUrl,
-    auth_api_client_factory: shortcuts.AuthApiClientFactory,
+    lazy_url: fastapi_rest_framework.testing.LazyUrl,
+    api_client_factory: shortcuts.AuthApiClientFactory,
     user_jwt_data: shortcuts.UserData,
     test_model_list: list[example_app.models.TestModel],
     repository: example_app.repositories.TestModelRepository,
@@ -141,8 +141,8 @@ async def test_list_api_search_filter(
         ordering_clauses=["id"],
     )
     assert len(expected_instances) == 1
-    response = await auth_api_client_factory(user_jwt_data).get(
-        test_model_lazy_url(action_name="list"),
+    response = await api_client_factory(user_jwt_data).get(
+        lazy_url(action_name="list"),
         params={
             "search": test_model.text,
         },
@@ -159,8 +159,8 @@ async def test_list_api_search_filter(
 
 
 async def test_filter_in(
-    test_model_lazy_url: fastapi_rest_framework.testing.LazyUrl,
-    auth_api_client_factory: shortcuts.AuthApiClientFactory,
+    lazy_url: fastapi_rest_framework.testing.LazyUrl,
+    api_client_factory: shortcuts.AuthApiClientFactory,
     user_jwt_data: shortcuts.UserData,
     test_model_list: list[example_app.models.TestModel],
 ) -> None:
@@ -173,8 +173,8 @@ async def test_filter_in(
             test_model_list,
         ),
     )
-    response = await auth_api_client_factory(user_jwt_data).get(
-        test_model_lazy_url(action_name="list"),
+    response = await api_client_factory(user_jwt_data).get(
+        lazy_url(action_name="list"),
         params={
             "text__in": filter_value,
             "order_by": "id",
@@ -197,15 +197,15 @@ async def test_filter_in(
 
 
 async def test_filter_gte(
-    test_model_lazy_url: fastapi_rest_framework.testing.LazyUrl,
-    auth_api_client_factory: shortcuts.AuthApiClientFactory,
+    lazy_url: fastapi_rest_framework.testing.LazyUrl,
+    api_client_factory: shortcuts.AuthApiClientFactory,
     user_jwt_data: shortcuts.UserData,
     test_model_list: list[example_app.models.TestModel],
 ) -> None:
     """Test filter `gte`."""
     max_num = max(test_model.number for test_model in test_model_list)
-    response = await auth_api_client_factory(user_jwt_data).get(
-        test_model_lazy_url(action_name="list"),
+    response = await api_client_factory(user_jwt_data).get(
+        lazy_url(action_name="list"),
         params={
             "number__gte": max_num,
             "order_by": "id",
@@ -222,8 +222,8 @@ async def test_filter_gte(
 
 
 async def test_filter_custom_filter(
-    test_model_lazy_url: fastapi_rest_framework.testing.LazyUrl,
-    auth_api_client_factory: shortcuts.AuthApiClientFactory,
+    lazy_url: fastapi_rest_framework.testing.LazyUrl,
+    api_client_factory: shortcuts.AuthApiClientFactory,
     user_jwt_data: shortcuts.UserData,
     test_model_list: list[example_app.models.TestModel],
 ) -> None:
@@ -234,8 +234,8 @@ async def test_filter_custom_filter(
             test_model_list,
         ),
     )
-    response = await auth_api_client_factory(user_jwt_data).get(
-        test_model_lazy_url(action_name="list"),
+    response = await api_client_factory(user_jwt_data).get(
+        lazy_url(action_name="list"),
         params={
             "is_boolean_condition_true": True,
             "order_by": "id",
@@ -255,8 +255,8 @@ async def test_filter_custom_filter(
 
 @pytest.mark.usefixtures("test_model_list")
 async def test_filter_m2m(
-    test_model_lazy_url: fastapi_rest_framework.testing.LazyUrl,
-    auth_api_client_factory: shortcuts.AuthApiClientFactory,
+    lazy_url: fastapi_rest_framework.testing.LazyUrl,
+    api_client_factory: shortcuts.AuthApiClientFactory,
     user_jwt_data: shortcuts.UserData,
     test_model: example_app.models.TestModel,
     repository: example_app.repositories.TestModelRepository,
@@ -276,8 +276,8 @@ async def test_filter_m2m(
         test_model_id=test_model.id,
         size=5,
     )
-    response = await auth_api_client_factory(user_jwt_data).get(
-        test_model_lazy_url(action_name="list"),
+    response = await api_client_factory(user_jwt_data).get(
+        lazy_url(action_name="list"),
         params={
             "m2m_related_models_ids__in": [related_model.id],
             "order_by": "id",
@@ -295,14 +295,14 @@ async def test_filter_m2m(
 
 
 async def test_list_reverse_ordering(
-    test_model_lazy_url: fastapi_rest_framework.testing.LazyUrl,
-    auth_api_client_factory: shortcuts.AuthApiClientFactory,
+    lazy_url: fastapi_rest_framework.testing.LazyUrl,
+    api_client_factory: shortcuts.AuthApiClientFactory,
     user_jwt_data: shortcuts.UserData,
     test_model_list: list[example_app.models.TestModel],
 ) -> None:
     """Test reverse ordering."""
-    response = await auth_api_client_factory(user_jwt_data).get(
-        test_model_lazy_url(action_name="list"),
+    response = await api_client_factory(user_jwt_data).get(
+        lazy_url(action_name="list"),
         params={
             "order_by": "-id",
         },
