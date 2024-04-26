@@ -45,7 +45,7 @@ fastapi = "<1"
 pyjwt = {extras = ["crypto"], version = "<3", optional = true}
 # Python client for Sentry (https://sentry.io)
 # https://pypi.org/project/sentry-sdk/
-sentry-sdk = {version = "<2", optional = true}
+sentry-sdk = {version = "<3", optional = true}
 # Python humanize functions
 # https://python-humanize.readthedocs.io/en/latest/
 humanize = {version = "<5", optional = true}
