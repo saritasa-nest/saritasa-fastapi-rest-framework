@@ -97,7 +97,7 @@ pytest-sugar = "^1.0.0"
 # It monitors your program, noting which parts of the code have been executed,
 # then analyzes the source to identify code that could have been executed but was not.
 # https://coverage.readthedocs.io/en/latest/
-coverage = "^7.5.0"
+coverage = "^7.5.1"
 # Allows you to use fixtures in @pytest.mark.parametrize.
 # https://pypi.org/project/pytest-lazy-fixtures/
 pytest-lazy-fixtures = "^1.0.7"
