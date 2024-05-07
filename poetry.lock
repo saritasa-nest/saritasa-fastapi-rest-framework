@@ -2162,7 +2162,7 @@ factory = ["factory-boy (<4)", "pillow (<11)"]
 type = "git"
 url = "https://github.com/saritasa-nest/saritasa-s3-tools.git"
 reference = "main"
-resolved_reference = "3a4541b3c066caa090527c2e3252c9bca47158c8"
+resolved_reference = "59a3661282632f3083d271017fc2500251ae6f5a"
 
 [[package]]
 name = "saritasa-sqlalchemy-tools"
@@ -2187,17 +2187,17 @@ testing = ["anyio (<5)"]
 type = "git"
 url = "https://github.com/saritasa-nest/saritasa-sqlalchemy-tools.git"
 reference = "main"
-resolved_reference = "d48d4830fef4f4ccc89b42e80a0d95f6ffce5c97"
+resolved_reference = "fe71c50c6226417515cf67c409dca945c2eedd02"
 
 [[package]]
 name = "sentry-sdk"
-version = "2.0.1"
+version = "2.1.1"
 description = "Python client for Sentry (https://sentry.io)"
 optional = true
 python-versions = ">=3.6"
 files = [
-    {file = "sentry_sdk-2.0.1-py2.py3-none-any.whl", hash = "sha256:b54c54a2160f509cf2757260d0cf3885b608c6192c2555a3857e3a4d0f84bdb3"},
-    {file = "sentry_sdk-2.0.1.tar.gz", hash = "sha256:c278e0f523f6f0ee69dc43ad26dcdb1202dffe5ac326ae31472e012d941bee21"},
+    {file = "sentry_sdk-2.1.1-py2.py3-none-any.whl", hash = "sha256:99aeb78fb76771513bd3b2829d12613130152620768d00cd3e45ac00cb17950f"},
+    {file = "sentry_sdk-2.1.1.tar.gz", hash = "sha256:95d8c0bb41c8b0bc37ab202c2c4a295bb84398ee05f4cdce55051cd75b926ec1"},
 ]
 
 [package.dependencies]
@@ -2206,6 +2206,7 @@ urllib3 = ">=1.26.11"
 
 [package.extras]
 aiohttp = ["aiohttp (>=3.5)"]
+anthropic = ["anthropic (>=0.16)"]
 arq = ["arq (>=0.23)"]
 asyncpg = ["asyncpg (>=0.23)"]
 beam = ["apache-beam (>=2.12)"]
@@ -2221,6 +2222,8 @@ flask = ["blinker (>=1.1)", "flask (>=0.11)", "markupsafe"]
 grpcio = ["grpcio (>=1.21.1)"]
 httpx = ["httpx (>=0.16.0)"]
 huey = ["huey (>=2)"]
+huggingface-hub = ["huggingface-hub (>=0.22)"]
+langchain = ["langchain (>=0.0.210)"]
 loguru = ["loguru (>=0.5)"]
 openai = ["openai (>=1.0.0)", "tiktoken (>=0.3.0)"]
 opentelemetry = ["opentelemetry-distro (>=0.35b0)"]
