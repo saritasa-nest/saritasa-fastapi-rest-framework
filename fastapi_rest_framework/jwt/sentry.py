@@ -30,6 +30,9 @@ class SentryJWTTokenAuthentication(
         """Set user in sentry."""
         user = super().on_user_auth(user)
         field_to_remove = self.get_fields_to_remove(user)
-        sentry_user_data = user.model_dump(exclude=field_to_remove)
+        sentry_user_data = user.model_dump(
+            mode="json",
+            exclude=field_to_remove,
+        )
         sentry_sdk.set_user(sentry_user_data)
         return user
