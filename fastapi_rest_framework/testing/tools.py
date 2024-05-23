@@ -2,9 +2,6 @@ import http
 import json
 import typing
 
-import cryptography.hazmat.backends
-import cryptography.hazmat.primitives.asymmetric.rsa
-import cryptography.hazmat.primitives.serialization
 import fastapi
 import httpx
 import pydantic
@@ -159,6 +156,10 @@ def validate_no_content(
 
 def generate_private_and_public_key_for_rs256_jwt() -> tuple[str, str]:
     """Generate private key and public key for jwt generation."""
+    import cryptography.hazmat.backends
+    import cryptography.hazmat.primitives.asymmetric.rsa
+    import cryptography.hazmat.primitives.serialization
+
     private_key = (
         cryptography.hazmat.primitives.asymmetric.rsa.generate_private_key(
             public_exponent=65537,

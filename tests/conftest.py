@@ -19,6 +19,14 @@ def anyio_backend() -> str:
     return "asyncio"
 
 
+@pytest.fixture(scope="session", autouse=True)
+def _adjust_s3_factories(
+    s3_bucket_name: str,
+) -> None:
+    """Adjust buckets for factories."""
+    factories.S3ImageFactory.bucket = s3_bucket_name
+
+
 @pytest.fixture(scope="session")
 def manual_database_setup() -> collections.abc.Callable[..., None]:
     """Return callable object that will be called to init database."""
@@ -84,7 +92,7 @@ async def soft_delete_repository(
     )
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def token_factory() -> collections.abc.Callable[[shortcuts.UserData], str]:
     """Get factory for generating jwt token."""
     return lambda user: example_app.security.JWTAuth.generate_jwt_for_user(
@@ -117,7 +125,7 @@ def fastapi_app(
         db_session_dependency
     )
     fastapi_app.dependency_overrides[
-        example_app.dependencies.S3ClientDependencyType
+        example_app.dependencies.get_s3_client
     ] = lambda: async_s3_client
 
     return fastapi_app
@@ -129,7 +137,7 @@ def user_jwt_data() -> shortcuts.UserData:
     return factories.UserJWTDataFactory()  # type: ignore
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def view() -> type[fastapi_rest_framework.views.AnyBaseAPIView]:
     """Get view for lazy_url."""
     return example_app.views.TestModelAPIView

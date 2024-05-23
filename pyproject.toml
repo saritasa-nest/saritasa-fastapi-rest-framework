@@ -294,7 +294,6 @@ sqlalchemy_host="postgres"
 # Configuration for s3
 s3_endpoint_url = "https://localhost.localstack.cloud:4566"
 s3_region="us-west-1"
-s3_bucket="fastapi-rest-framework-files"
 s3_access_key="root"
 s3_secret_key="rootroot"
 
