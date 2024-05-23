@@ -2121,13 +2121,13 @@ crt = ["botocore[crt] (>=1.33.2,<2.0a.0)"]
 
 [[package]]
 name = "saritasa-invocations"
-version = "1.1.0"
+version = "1.1.1"
 description = "Collection of invoke commands used by Saritasa"
 optional = false
-python-versions = ">=3.10,<4.0"
+python-versions = "<4.0,>=3.10"
 files = [
-    {file = "saritasa_invocations-1.1.0-py3-none-any.whl", hash = "sha256:af01659c51084d27f115d5aaf9f6075b75b9d4a71b2e1f95102c7e8288bae2b4"},
-    {file = "saritasa_invocations-1.1.0.tar.gz", hash = "sha256:67559974fce5ea221416f15d78eecc9cb47fbc11e035d62b4673ec0a91d23d16"},
+    {file = "saritasa_invocations-1.1.1-py3-none-any.whl", hash = "sha256:5fa889d6ce75b029f43b3c316561995ed5163e88bf14612b7b1bd4835feb6395"},
+    {file = "saritasa_invocations-1.1.1.tar.gz", hash = "sha256:61033debaffa440c9f69552d7c9e9813cfa12dfd99adad3c07cfb66f37cb0476"},
 ]
 
 [package.dependencies]
@@ -2162,7 +2162,7 @@ factory = ["factory-boy (<4)", "pillow (<11)"]
 type = "git"
 url = "https://github.com/saritasa-nest/saritasa-s3-tools.git"
 reference = "main"
-resolved_reference = "50798ae102527d61e37ac3480f31c8d0d27fd4f7"
+resolved_reference = "18c3b1ca53841de7461f2b9c06b2b3b24629c7f9"
 
 [[package]]
 name = "saritasa-sqlalchemy-tools"
@@ -2859,4 +2859,4 @@ sentry = ["sentry-sdk"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "744ff61f23a3fe092171b04c1ecad248cdb54370d084445a50676c9b9d2a99fc"
+content-hash = "e30a4f82cb3a3638312d778fc6c9a2c8516768e27b4ebf221492f778c069b390"
