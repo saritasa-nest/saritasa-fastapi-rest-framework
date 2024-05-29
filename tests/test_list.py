@@ -320,3 +320,120 @@ async def test_list_reverse_ordering(
         strict=False,
     ):
         assert actual.id == expected.id
+
+
+@pytest.mark.usefixtures("test_model_list")
+async def test_filter_group_related_filter(
+    lazy_url: fastapi_rest_framework.testing.LazyUrl,
+    api_client_factory: shortcuts.AuthApiClientFactory,
+    user_jwt_data: shortcuts.UserData,
+    test_model: example_app.models.TestModel,
+    repository: example_app.repositories.TestModelRepository,
+) -> None:
+    """Test related group filters."""
+    related_model_1 = await factories.RelatedModelFactory.create_async(
+        session=repository.db_session,
+        test_model=test_model,
+    )
+    related_model_2 = await factories.RelatedModelFactory.create_async(
+        session=repository.db_session,
+        test_model=test_model,
+    )
+    # Noise
+    noise_test_model_1 = await factories.TestModelFactory.create_async(
+        session=repository.db_session,
+    )
+    await factories.RelatedModelFactory.create_batch_async(
+        session=repository.db_session,
+        size=2,
+        test_model=noise_test_model_1,
+        text=related_model_1.text,
+        number=123456789,
+    )
+    await factories.RelatedModelFactory.create_batch_async(
+        session=repository.db_session,
+        size=2,
+        test_model=noise_test_model_1,
+        text=related_model_2.text,
+        number=123456789,
+    )
+    noise_test_model_2 = await factories.TestModelFactory.create_async(
+        session=repository.db_session,
+    )
+    await factories.RelatedModelFactory.create_batch_async(
+        session=repository.db_session,
+        size=2,
+        test_model=noise_test_model_2,
+        text="Test Text",
+        number=related_model_1.number,
+    )
+    await factories.RelatedModelFactory.create_batch_async(
+        session=repository.db_session,
+        size=2,
+        test_model=noise_test_model_2,
+        text="Test Text",
+        number=related_model_2.number,
+    )
+    response = await api_client_factory(user_jwt_data).get(
+        lazy_url(action_name="list"),
+        params={
+            "related_models__text__in": [
+                related_model_1.text,
+                related_model_2.text,
+            ],
+            "related_models__number__in": [
+                related_model_1.number,
+                related_model_2.number,
+            ],
+            "order_by": "id",
+        },
+    )
+
+    response_data = (
+        fastapi_rest_framework.testing.extract_paginated_result_from_response(
+            response=response,
+            schema=example_app.views.TestModelAPIView.list_schema,
+        )
+    )
+    assert len(response_data.results) == 1
+    assert response_data.results[0].id == test_model.id
+
+
+@pytest.mark.usefixtures("test_model_list")
+async def test_filter_group_filter(
+    lazy_url: fastapi_rest_framework.testing.LazyUrl,
+    api_client_factory: shortcuts.AuthApiClientFactory,
+    user_jwt_data: shortcuts.UserData,
+    test_model: example_app.models.TestModel,
+    repository: example_app.repositories.TestModelRepository,
+) -> None:
+    """Test group filters."""
+    related_model_1 = await factories.RelatedModelFactory.create_async(
+        session=repository.db_session,
+        test_model=test_model,
+    )
+    related_model_2 = await factories.RelatedModelFactory.create_async(
+        session=repository.db_session,
+        test_model=test_model,
+    )
+    response = await api_client_factory(user_jwt_data).get(
+        lazy_url(action_name="list"),
+        params={
+            "related_models__text_or_number__text__in": [
+                related_model_1.text,
+            ],
+            "related_models__text_or_number__number__in": [
+                related_model_2.number,
+            ],
+            "order_by": "id",
+        },
+    )
+
+    response_data = (
+        fastapi_rest_framework.testing.extract_paginated_result_from_response(
+            response=response,
+            schema=example_app.views.TestModelAPIView.list_schema,
+        )
+    )
+    assert len(response_data.results) == 1
+    assert response_data.results[0].id == test_model.id

@@ -35,7 +35,7 @@ class Filters(
     _api_to_repo_field: typing.ClassVar[dict[str, str]] = {}
 
     @metrics.tracker
-    def transform_search(
+    async def transform_search(
         self,
         user: permissions.UserT,
         model: type[repositories.APIModelT],
@@ -50,14 +50,26 @@ class Filters(
         )
 
     @metrics.tracker
-    def transform_filter(
+    async def transform_filter(
         self,
         user: permissions.UserT,
         model: type[repositories.APIModelT],
         api_filter: str,
         value: typing.Any,
         context: common_types.ContextType,
-    ) -> repositories.WhereFilterT:
+    ) -> repositories.WhereFilterT | None:
+        """Prepare filter."""
+        raise NotImplementedError  # pragma: no cover
+
+    @metrics.tracker
+    async def transform_group_filter(
+        self,
+        user: permissions.UserT,
+        model: type[repositories.APIModelT],
+        api_filter: str,
+        value: "Filters[typing.Any, typing.Any, typing.Any]",
+        context: common_types.ContextType,
+    ) -> repositories.WhereFilterT | None:
         """Prepare filter."""
         raise NotImplementedError  # pragma: no cover
 
@@ -68,30 +80,33 @@ class Filters(
         context: common_types.ContextType,
     ) -> list[repositories.WhereFilterT]:
         """Transform model into proper filters."""
-        filters_mapping = self.model_dump(mode="python")
-        filters = []
-        for api_filter, value in filters_mapping.items():
-            if value is None:
-                continue
-            if value == "":
-                continue
-            if isinstance(value, collections.abc.Sized) and len(value) == 0:
-                continue
-            if hasattr(self, f"transform_{api_filter}"):
-                filters.append(
-                    getattr(
-                        self,
-                        f"transform_{api_filter}",
-                    )(
-                        user,
-                        self._model,
-                        value,
-                        context,
-                    ),
+        filters: list[repositories.WhereFilterT] = []
+        for api_filter, value in dict(self).items():
+            if (
+                value is None
+                or value == ""
+                or (
+                    isinstance(value, collections.abc.Sized)
+                    and len(value) == 0
                 )
+            ):
                 continue
-            filters.append(
-                self.transform_filter(
+            if transform_filter := getattr(
+                self,
+                f"transform_{api_filter}",
+                None,
+            ):
+                prepared_filter = await transform_filter(
+                    user,
+                    self._model,
+                    value,
+                    context,
+                )
+                if prepared_filter is not None:
+                    filters.append(prepared_filter)
+                continue
+            if isinstance(value, Filters):
+                prepared_filter = await self.transform_group_filter(
                     user=user,
                     model=self._model,
                     api_filter=self._api_to_repo_field.get(
@@ -100,8 +115,19 @@ class Filters(
                     ),
                     value=value,
                     context=context,
-                ),
+                )
+                if prepared_filter is not None:
+                    filters.append(prepared_filter)
+                continue
+            prepared_filter = await self.transform_filter(
+                user=user,
+                model=self._model,
+                api_filter=self._api_to_repo_field.get(api_filter, api_filter),
+                value=value,
+                context=context,
             )
+            if prepared_filter is not None:
+                filters.append(prepared_filter)
         return filters
 
 

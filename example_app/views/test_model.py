@@ -1,3 +1,4 @@
+import collections
 import http
 import typing
 
@@ -25,6 +26,61 @@ class Context(fastapi_rest_framework.Context):
     s3_client: dependencies.S3ClientDependencyType
 
 
+class TextOrNumberFilter(
+    core.Filters[repositories.RelatedModelRepository.model],
+):
+    """Define filter to filter by text or by number."""
+
+    _model = repositories.RelatedModelRepository.model
+    text__in: list[str] = pydantic.Field(
+        fastapi.Query(
+            (),
+            alias="related_models__text_or_number__text__in",
+        ),
+    )
+    number__in: list[int] = pydantic.Field(
+        fastapi.Query(
+            (),
+            alias="related_models__text_or_number__number__in",
+        ),
+    )
+
+    def get_group_operator(
+        self,
+        user: security.UserJWTData,
+        model: type[repositories.RelatedModelRepository.model],
+        api_filter: str,
+        context: fastapi_rest_framework.ContextType,
+    ) -> collections.abc.Callable[
+        ...,
+        saritasa_sqlalchemy_tools.SQLWhereFilter,
+    ]:
+        """Get group operator."""
+        return sqlalchemy.or_
+
+
+class RelatedModelFilters(
+    core.Filters[repositories.RelatedModelRepository.model],
+):
+    """Define filters for related_model model."""
+
+    _model = repositories.RelatedModelRepository.model
+
+    text__in: list[str] = pydantic.Field(
+        fastapi.Query(
+            (),
+            alias="related_models__text__in",
+        ),
+    )
+    number__in: list[int] = pydantic.Field(
+        fastapi.Query(
+            (),
+            alias="related_models__number__in",
+        ),
+    )
+    text_or_number: typing.Annotated[TextOrNumberFilter, fastapi.Depends()]
+
+
 class Filters(core.Filters[repositories.TestModelRepository.model]):
     """Define filters for test_models model."""
 
@@ -42,8 +98,9 @@ class Filters(core.Filters[repositories.TestModelRepository.model]):
     number__gte: int | None = pydantic.Field(fastapi.Query(None))
     m2m_related_models_ids__in: list[int] = pydantic.Field(fastapi.Query(()))
     is_boolean_condition_true: bool = pydantic.Field(fastapi.Query(False))
+    related_models: typing.Annotated[RelatedModelFilters, fastapi.Depends()]
 
-    def transform_is_boolean_condition_true(
+    async def transform_is_boolean_condition_true(
         self,
         user: security.UserJWTData,
         model: type[repositories.TestModelRepository.model],

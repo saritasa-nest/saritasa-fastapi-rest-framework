@@ -156,6 +156,13 @@ class RelatedModelFactory(
 ):
     """Factory to generate RelatedModel."""
 
+    text = factory.Faker(
+        "pystr",
+        min_chars=1,
+        max_chars=30,
+    )
+    number = factory.Faker("pyint")
+
     class Meta:
         model = example_app.models.RelatedModel
         repository = example_app.repositories.RelatedModelRepository
