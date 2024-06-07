@@ -2165,7 +2165,7 @@ factory = ["factory-boy (<4)", "pillow (<11)"]
 type = "git"
 url = "https://github.com/saritasa-nest/saritasa-s3-tools.git"
 reference = "main"
-resolved_reference = "424b3d6728e09c031a8e65642df40e99b89200c3"
+resolved_reference = "1f3daa829027c6f5b8de309a20b1cf1978b746a0"
 
 [[package]]
 name = "saritasa-sqlalchemy-tools"
@@ -2190,17 +2190,17 @@ testing = ["anyio (<5)"]
 type = "git"
 url = "https://github.com/saritasa-nest/saritasa-sqlalchemy-tools.git"
 reference = "main"
-resolved_reference = "62629b0117ac1e162c00db31b4cb1479b0eb5380"
+resolved_reference = "f94521368efffa47f8f31a09d7cd9bc853ef7228"
 
 [[package]]
 name = "sentry-sdk"
-version = "2.4.0"
+version = "2.5.0"
 description = "Python client for Sentry (https://sentry.io)"
 optional = true
 python-versions = ">=3.6"
 files = [
-    {file = "sentry_sdk-2.4.0-py2.py3-none-any.whl", hash = "sha256:a42b70981cd4ed7da3c85d0360502d2ac932a15a4a420b360e1ebded2fc19a92"},
-    {file = "sentry_sdk-2.4.0.tar.gz", hash = "sha256:62b9bb0489e731ecbce008f9647899b51d220067a75c3adfd46f8187660c0029"},
+    {file = "sentry_sdk-2.5.0-py2.py3-none-any.whl", hash = "sha256:75d2e1fd8a887fdf63df612f5d37991c248a080b886d80714560bdded2bb9051"},
+    {file = "sentry_sdk-2.5.0.tar.gz", hash = "sha256:05453f921c561b51159f712c2cd267b595e5c195b38b337d03baeb42719dd3c7"},
 ]
 
 [package.dependencies]
