@@ -158,7 +158,7 @@ class S3GetParamsView(
         * Then send response data to `url` via POST.
 
         """
-        await permissions.S3ConfigPermission()(
+        await permissions.S3ConfigPermission[core_permissions.UserT]()(
             user=user_data,
             action="",
             context={},

@@ -27,7 +27,7 @@ class BaseValidator(
     @metrics.tracker
     async def __call__(
         self,
-        value: types.AnyGenericInput,
+        value: types.AnyGenericInput | None,
         context: common_types.ContextType,
         loc: types.LOCType = ("body",),
     ) -> types.AnyGenericOutput | None:
@@ -142,7 +142,7 @@ class BaseListValidator(
     @metrics.tracker
     async def _validate(
         self,
-        value: collections.abc.Sequence[types.AnyGenericInput],
+        value: collections.abc.Sequence[types.AnyGenericInput] | None,
         loc: types.LOCType,
         context: common_types.ContextType,
     ) -> collections.abc.Sequence[types.AnyGenericOutput] | None:

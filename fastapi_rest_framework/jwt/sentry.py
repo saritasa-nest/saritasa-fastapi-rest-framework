@@ -2,19 +2,19 @@ import typing
 
 import sentry_sdk
 
-from .. import metrics, permissions
+from .. import metrics
 from . import core
 
 
 class SentryJWTTokenAuthentication(
-    core.JWTTokenAuthentication[permissions.UserT],
-    typing.Generic[permissions.UserT],
+    core.JWTTokenAuthentication[core.UserJWTType],
+    typing.Generic[core.UserJWTType],
 ):
     """JWT Authentication with sentry tracking."""
 
     def get_fields_to_remove(
         self,
-        user: permissions.UserT,
+        user: core.UserJWTType,
     ) -> (
         set[int]
         | set[str]
@@ -26,7 +26,7 @@ class SentryJWTTokenAuthentication(
         return None
 
     @metrics.tracker
-    def on_user_auth(self, user: permissions.UserT) -> permissions.UserT:
+    def on_user_auth(self, user: core.UserJWTType) -> core.UserJWTType:
         """Set user in sentry."""
         user = super().on_user_auth(user)
         field_to_remove = self.get_fields_to_remove(user)

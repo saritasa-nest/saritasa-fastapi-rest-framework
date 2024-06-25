@@ -133,16 +133,18 @@ class BaseModelValidator(
     @metrics.tracker
     async def _validate(
         self,
-        value: types.ApiDataType,
+        value: types.ApiDataType | None,
         loc: types.LOCType,
         context: common_types.ContextType,
-    ) -> types.ApiDataType:
+    ) -> types.ApiDataType | None:
         """Perform data validation.
 
         It's done in two steps, first we prepare validation map, then we
         use it validate_data to perform validation.
 
         """
+        if not value:
+            return value
         value = await self._validate_data(
             data=value,
             validation_map=self._get_validation_map(
@@ -231,11 +233,13 @@ class BaseModelListValidator(
     @metrics.tracker
     async def _validate(
         self,
-        value: collections.abc.Sequence[types.ApiDataType],
+        value: collections.abc.Sequence[types.ApiDataType] | None,
         loc: types.LOCType,
         context: common_types.ContextType,
-    ) -> collections.abc.Sequence[types.ApiDataType]:
+    ) -> collections.abc.Sequence[types.ApiDataType] | None:
         """Validate sequence of api data."""
+        if not value:
+            return value
         validated_data: list[types.ApiDataType] = []
         errors: list[core.ValidationError] = []
         for index, data in enumerate(value):
