@@ -1,51 +1,32 @@
-import contextlib
+import http
 
-import pytest
-
+import example_app
 import fastapi_rest_framework
 
-from . import shortcuts
+from . import factories, shortcuts
 
 
-@pytest.fixture
-def jwt_authentication() -> shortcuts.JWTAuthenticationType:
-    """Get instance of `JWTTokenAuthentication`."""
-    return shortcuts.JWTAuthentication
-
-
-@pytest.fixture
-def jwt_access_token(
-    user_jwt_data: shortcuts.UserData,
-    jwt_authentication: shortcuts.JWTAuthenticationType,
-) -> str:
-    """Generate JWT access token."""
-    return jwt_authentication.generate_jwt_for_user(user=user_jwt_data)
-
-
-@pytest.fixture
-def jwt_refresh_data(
-    user_jwt_data: shortcuts.UserData,
-) -> shortcuts.UserData:
-    """Generate test JWT data for refresh token."""
-    user_jwt_data.token_type = fastapi_rest_framework.jwt.TokenType.refresh
-    return user_jwt_data
-
-
-@pytest.fixture
-def jwt_refresh_token(
-    jwt_refresh_data: shortcuts.UserData,
-    jwt_authentication: shortcuts.JWTAuthenticationType,
-) -> str:
-    """Generate JWT refresh token."""
-    return jwt_authentication.generate_jwt_for_user(
-        user=jwt_refresh_data,
-    )
-
-
-def test_refresh_token_cannot_be_used_as_access(
-    jwt_authentication: shortcuts.JWTAuthenticationType,
-    jwt_refresh_token: str,
+async def test_refresh_token_cannot_be_used_as_access(
+    lazy_url: fastapi_rest_framework.testing.LazyUrl,
+    test_model: example_app.models.TestModel,
+    api_client_factory: shortcuts.AuthApiClientFactory,
 ) -> None:
     """Ensure that JWT `refresh` token cannot be used as `access` token."""
-    with contextlib.suppress(fastapi_rest_framework.UnauthorizedException):
-        jwt_authentication.decode_access(token=jwt_refresh_token)
+    api_client = api_client_factory(
+        factories.UserJWTDataFactory(
+            token_type=fastapi_rest_framework.jwt.TokenType.refresh,
+        ),
+    )
+    response = await api_client.get(
+        lazy_url(action_name="detail", pk=test_model.id),
+    )
+    response_data = (
+        fastapi_rest_framework.testing.extract_general_errors_from_response(
+            response=response,
+            expected_status=http.HTTPStatus.UNAUTHORIZED,
+        )
+    )
+    assert (
+        response_data.detail
+        == f"Token type must be {fastapi_rest_framework.jwt.TokenType.access}"
+    )

@@ -99,22 +99,22 @@ class JWTTokenAuthentication(
     @metrics.tracker
     def decode_access(self, token: str) -> UserJWTType:
         """Transform access token into user data."""
-        decoded_access = self.decode(token=token)
-        if decoded_access.token_type != TokenType.access:
+        decoded = self.decode(token=token)
+        if decoded.token_type != TokenType.access:
             raise exceptions.UnauthorizedException(
-                detail="Invalid JWT token body",
+                detail=f"Token type must be {TokenType.access}",
             )
-        return decoded_access
+        return decoded
 
     @metrics.tracker
     def decode_refresh(self, token: str) -> UserJWTType:
         """Transform refresh token into user data."""
-        decoded_refresh = self.decode(token=token)
-        if decoded_refresh.token_type != TokenType.refresh:
+        decoded = self.decode(token=token)
+        if decoded.token_type != TokenType.refresh:
             raise exceptions.UnauthorizedException(
-                detail="Invalid JWT token body",
+                detail=f"Token type must be {TokenType.refresh}",
             )
-        return decoded_refresh
+        return decoded
 
     @metrics.tracker
     def on_user_auth(self, user: UserJWTType) -> UserJWTType:
