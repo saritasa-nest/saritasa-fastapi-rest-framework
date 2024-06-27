@@ -39,13 +39,10 @@ async def test_auth_validation(
         .model_dump(mode="json"),
     )
     if user is None:
-        response_data = fastapi_rest_framework.testing.extract_general_errors_from_response(  # noqa: E501
+        fastapi_rest_framework.testing.validate_forbidden(
             response=response,
-            expected_status=http.HTTPStatus.FORBIDDEN,
+            message="User can't use this config for upload",
         )
-        assert (
-            response_data.detail == "User can't use this config for upload"
-        ), response_data
         return
     fastapi_rest_framework.testing.extract_schema_from_response(
         response=response,

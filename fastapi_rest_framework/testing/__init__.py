@@ -8,6 +8,7 @@ from .tools import (
     generate_private_and_public_key_for_rs256_jwt,
     lazy_url,
     validate_auth_required_response,
+    validate_forbidden,
     validate_no_content,
     validate_not_found,
     validate_response_status,

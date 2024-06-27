@@ -23,13 +23,10 @@ async def test_permission_for_action_api(
             pk=soft_delete_test_model.id,
         ),
     )
-    error = (
-        fastapi_rest_framework.testing.extract_general_errors_from_response(
-            response,
-            expected_status=http.HTTPStatus.FORBIDDEN,
-        )
+    fastapi_rest_framework.testing.validate_forbidden(
+        response=response,
+        message="User is not allowed",
     )
-    assert error.detail == "User is not allowed", error
 
 
 async def test_default_permission(
@@ -49,13 +46,10 @@ async def test_default_permission(
     ):
         return
 
-    error = (
-        fastapi_rest_framework.testing.extract_general_errors_from_response(
-            response,
-            expected_status=http.HTTPStatus.FORBIDDEN,
-        )
+    fastapi_rest_framework.testing.validate_forbidden(
+        response=response,
+        message="User is not allowed",
     )
-    assert error.detail == "User is not allowed", error
 
 
 @pytest.mark.parametrize(
@@ -78,10 +72,7 @@ async def test_default_permission_dependency(
     if allow:
         assert response.status_code == http.HTTPStatus.OK
         return
-    error = (
-        fastapi_rest_framework.testing.extract_general_errors_from_response(
-            response,
-            expected_status=http.HTTPStatus.FORBIDDEN,
-        )
+    fastapi_rest_framework.testing.validate_forbidden(
+        response=response,
+        message="User is not allowed",
     )
-    assert error.detail == "User is not allowed", error

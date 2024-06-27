@@ -134,6 +134,18 @@ def validate_response_status(
     assert response.status_code == expected_status, data
 
 
+def validate_forbidden(
+    response: httpx.Response,
+    message: str,
+) -> None:
+    """Validate forbidden error."""
+    error = extract_general_errors_from_response(
+        response=response,
+        expected_status=http.HTTPStatus.FORBIDDEN,
+    )
+    assert error.detail == message, (error.detail, message)
+
+
 def validate_not_found(
     response: httpx.Response,
 ) -> None:
