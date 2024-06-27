@@ -227,7 +227,7 @@ class ListMixin(
             limit: int = pydantic.Field(
                 fastapi.Query(
                     default=self.list_limit_default,
-                    gt=0,
+                    ge=1,
                     le=self.list_limit_max,
                 ),
             )
