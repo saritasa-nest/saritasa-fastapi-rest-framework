@@ -1224,13 +1224,13 @@ ipython = {version = ">=7.31.1", markers = "python_version >= \"3.11\""}
 
 [[package]]
 name = "ipython"
-version = "8.25.0"
+version = "8.26.0"
 description = "IPython: Productive Interactive Computing"
 optional = false
 python-versions = ">=3.10"
 files = [
-    {file = "ipython-8.25.0-py3-none-any.whl", hash = "sha256:53eee7ad44df903a06655871cbab66d156a051fd86f3ec6750470ac9604ac1ab"},
-    {file = "ipython-8.25.0.tar.gz", hash = "sha256:c6ed726a140b6e725b911528f80439c534fac915246af3efc39440a6b0f9d716"},
+    {file = "ipython-8.26.0-py3-none-any.whl", hash = "sha256:e6b347c27bdf9c32ee9d31ae85defc525755a1869f14057e900675b9e8d6e6ff"},
+    {file = "ipython-8.26.0.tar.gz", hash = "sha256:1cec0fbba8404af13facebe83d04436a7434c7400e59f47acf467c64abd0956c"},
 ]
 
 [package.dependencies]
@@ -1256,7 +1256,7 @@ nbformat = ["nbformat"]
 notebook = ["ipywidgets", "notebook"]
 parallel = ["ipyparallel"]
 qtconsole = ["qtconsole"]
-test = ["pickleshare", "pytest", "pytest-asyncio (<0.22)", "testpath"]
+test = ["packaging", "pickleshare", "pytest", "pytest-asyncio (<0.22)", "testpath"]
 test-extra = ["curio", "ipython[test]", "matplotlib (!=3.2.0)", "nbformat", "numpy (>=1.23)", "pandas", "trio"]
 
 [[package]]
@@ -2163,7 +2163,7 @@ factory = ["factory-boy (<4)", "pillow (<11)"]
 type = "git"
 url = "https://github.com/saritasa-nest/saritasa-s3-tools.git"
 reference = "main"
-resolved_reference = "7366c595b454e8a108453f57bbbd3ac2601da9bd"
+resolved_reference = "f75ed3511fbeeb486a0c5074db517f49f12496fc"
 
 [[package]]
 name = "saritasa-sqlalchemy-tools"
@@ -2188,7 +2188,7 @@ testing = ["anyio (<5)"]
 type = "git"
 url = "https://github.com/saritasa-nest/saritasa-sqlalchemy-tools.git"
 reference = "main"
-resolved_reference = "8fc81d634e08f6c0b8a2252be0a64445273c574c"
+resolved_reference = "2504f61c0fac270efcc723e0a7437eb413b2ee6d"
 
 [[package]]
 name = "sentry-sdk"
@@ -2857,4 +2857,4 @@ sentry = ["sentry-sdk"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "9033e6ec2334816fccb24a653b0bafe29922a02085ebb371975a93374740290d"
+content-hash = "2e5045535a58b47c79eb2f4028115daef0e29ee86232e292f7857b895341f669"
