@@ -13,7 +13,7 @@ async def get_db_session() -> (
         password="manager",  # noqa: S106
         host="postgres",
         port=5432,
-        database="fastapi-rest-framework-user-dev",
+        database="fastapi-rest-framework-dev",
         autocommit=False,
         autoflush=False,
         expire_on_commit=False,
