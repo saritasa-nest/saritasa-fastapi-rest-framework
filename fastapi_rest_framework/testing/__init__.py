@@ -12,5 +12,6 @@ from .tools import (
     validate_no_content,
     validate_not_found,
     validate_response_status,
+    validate_unauthorized,
 )
 from .types import AuthApiClientFactory, LazyUrl

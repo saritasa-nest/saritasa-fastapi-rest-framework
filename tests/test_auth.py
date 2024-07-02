@@ -1,5 +1,3 @@
-import http
-
 import example_app
 import fastapi_rest_framework
 
@@ -20,13 +18,9 @@ async def test_refresh_token_cannot_be_used_as_access(
     response = await api_client.get(
         lazy_url(action_name="detail", pk=test_model.id),
     )
-    response_data = (
-        fastapi_rest_framework.testing.extract_general_errors_from_response(
-            response=response,
-            expected_status=http.HTTPStatus.UNAUTHORIZED,
-        )
-    )
-    assert (
-        response_data.detail
-        == f"Token type must be {fastapi_rest_framework.jwt.TokenType.access}"
+    fastapi_rest_framework.testing.validate_unauthorized(
+        response=response,
+        message=(
+            f"Token type must be {fastapi_rest_framework.jwt.TokenType.access}"
+        ),
     )
