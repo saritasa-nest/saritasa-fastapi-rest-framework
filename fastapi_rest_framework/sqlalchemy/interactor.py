@@ -2,7 +2,7 @@ import typing
 
 import saritasa_sqlalchemy_tools
 
-from .. import interactors, metrics, permissions, validators
+from .. import common_types, interactors, metrics, permissions, validators
 from . import repositories
 
 
@@ -27,6 +27,7 @@ class SqlAlchemyInteractor(
     def _prepare_data_for_instance(
         self,
         data: validators.ApiDataType,
+        context: common_types.ContextType,
     ) -> validators.ApiDataType:
         """Prepare data for instance init or update."""
         prepared_data: validators.ApiDataType = {}

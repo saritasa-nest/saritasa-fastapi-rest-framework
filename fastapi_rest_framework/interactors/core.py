@@ -142,6 +142,7 @@ class ApiDataInteractor(
     def _prepare_data_for_instance(
         self,
         data: validators.ApiDataType,
+        context: common_types.ContextType,
     ) -> validators.ApiDataType:
         """Prepare data for instance init or update."""
         return data
@@ -150,9 +151,10 @@ class ApiDataInteractor(
     def _prepare_instance_from_api(
         self,
         data: validators.ApiDataType,
+        context: common_types.ContextType,
     ) -> repositories.APIModelT:
         """Prepare instance from API."""
-        prepared_data = self._prepare_data_for_instance(data)
+        prepared_data = self._prepare_data_for_instance(data, context)
         if self.instance:
             for field, value in prepared_data.items():
                 setattr(self.instance, field, value)
@@ -163,6 +165,7 @@ class ApiDataInteractor(
     async def _prepare_instance_create(
         self,
         instance: repositories.APIModelT,
+        context: common_types.ContextType,
     ) -> repositories.APIModelT:
         """Perform extra logic before creating object."""
         return instance
@@ -170,6 +173,7 @@ class ApiDataInteractor(
     async def _prepare_instance_update(
         self,
         instance: repositories.APIModelT,
+        context: common_types.ContextType,
     ) -> repositories.APIModelT:
         """Perform extra logic before updating object."""
         return instance
@@ -246,8 +250,14 @@ class ApiDataInteractor(
             if field not in data:
                 continue
             m2m_data.append((m2m_config, data.pop(field)))
-        instance = self._prepare_instance_from_api(data=data)
-        instance = await self._prepare_instance_create(instance=instance)
+        instance = self._prepare_instance_from_api(
+            data=data,
+            context=context,
+        )
+        instance = await self._prepare_instance_create(
+            instance=instance,
+            context=context,
+        )
         await self._pre_create_hook(
             not_saved_instance=instance,
             data=data,
@@ -279,8 +289,14 @@ class ApiDataInteractor(
             if field not in data:
                 continue
             m2m_data.append((m2m_config, data.pop(field)))
-        instance = self._prepare_instance_from_api(data=data)
-        instance = await self._prepare_instance_update(instance=instance)
+        instance = self._prepare_instance_from_api(
+            data=data,
+            context=context,
+        )
+        instance = await self._prepare_instance_update(
+            instance=instance,
+            context=context,
+        )
         await self._pre_update_hook(
             instance=instance,
             data=data,
@@ -324,7 +340,13 @@ class ApiDataInteractor(
     ) -> list[repositories.APIModelT]:
         """Perform bulk create."""
         return await self._create_batch_in_db(
-            objects=tuple(map(self._prepare_instance_from_api, data)),
+            objects=tuple(
+                self._prepare_instance_from_api(
+                    data=data_entry,
+                    context=context,
+                )
+                for data_entry in data
+            ),
         )
 
     @metrics.tracker
@@ -335,7 +357,13 @@ class ApiDataInteractor(
     ) -> None:
         """Perform bulk update."""
         await self._update_batch_in_db(
-            objects=tuple(map(self._prepare_instance_from_api, data)),
+            objects=tuple(
+                self._prepare_instance_from_api(
+                    data=data_entry,
+                    context=context,
+                )
+                for data_entry in data
+            ),
         )
 
     @metrics.tracker
