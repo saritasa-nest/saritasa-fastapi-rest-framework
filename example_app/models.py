@@ -15,6 +15,16 @@ class RelatedModel(
 
     __tablename__ = "related_model"
 
+    text: sqlalchemy.orm.Mapped[str] = sqlalchemy.orm.mapped_column(
+        sqlalchemy.String(250),
+        nullable=False,
+    )
+
+    number: sqlalchemy.orm.Mapped[int] = sqlalchemy.orm.mapped_column(
+        sqlalchemy.Integer(),
+        nullable=False,
+    )
+
     test_model_list = sqlalchemy.orm.relationship(
         "TestModel",
         foreign_keys="TestModel.related_model_id",
