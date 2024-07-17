@@ -66,7 +66,7 @@ class CreateMixin(
             )
         validator = self.get_validator(action=self.action)
         if issubclass(validator, validators.BaseModelListValidator):
-            raise ValueError(  # pragma: no cover
+            raise TypeError(  # pragma: no cover
                 (
                     "List validator is not supported in `update` action"
                     f"for {self.__class__}"

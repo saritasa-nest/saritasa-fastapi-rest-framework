@@ -107,9 +107,6 @@ class TestModelAPIView(
     )
     repository_class = repositories.TestModelRepository
     model = repository_class.model
-    joined_load_map = {  # noqa: RUF012
-        "default": (),
-    }
     base_permissions = (security.AuthRequiredPermission[model](),)
     permission_map = {  # noqa: RUF012
         "default": (security.AllowPermission[model](),),

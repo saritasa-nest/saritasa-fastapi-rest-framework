@@ -37,15 +37,14 @@ async def pydantic_validation_error_exception_handler(
     exc: fastapi.exceptions.RequestValidationError,
 ) -> fastapi.responses.JSONResponse:
     """Handle pydantic validation errors."""
-    errors = []
-    for error in exc.errors():
-        errors.append(
-            validators.ValidationErrorSchema(
-                type=error["type"],
-                field=".".join(map(str, error["loc"])),
-                detail=error["msg"],
-            ),
+    errors = [
+        validators.ValidationErrorSchema(
+            type=error["type"],
+            field=".".join(map(str, error["loc"])),
+            detail=error["msg"],
         )
+        for error in exc.errors()
+    ]
     return fastapi.responses.JSONResponse(
         content=validators.GenericError(
             type="validation",
@@ -82,18 +81,17 @@ def handle_explicit_pydantic_error(
     exc: pydantic.ValidationError,
 ) -> fastapi.responses.JSONResponse:
     """Handle explicit pydantic validation errors."""
-    errors = []
     base_loc = "body"
     if request.method in ["GET"]:
         base_loc = "query"
-    for error in exc.errors():
-        errors.append(
-            validators.ValidationErrorSchema(
-                type=error["type"],
-                field=".".join(map(str, (base_loc, *error["loc"]))),
-                detail=error["msg"],
-            ),
+    errors = [
+        validators.ValidationErrorSchema(
+            type=error["type"],
+            field=".".join(map(str, (base_loc, *error["loc"]))),
+            detail=error["msg"],
         )
+        for error in exc.errors()
+    ]
     return fastapi.responses.JSONResponse(
         content=validators.GenericError(
             type="validation",
