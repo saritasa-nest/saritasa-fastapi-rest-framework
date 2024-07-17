@@ -35,5 +35,5 @@ fastapi_app.exception_handler(fastapi.exceptions.RequestValidationError)(
     fastapi_rest_framework.pydantic_validation_error_exception_handler,
 )
 fastapi_app.exception_handler(pydantic.ValidationError)(
-    fastapi_rest_framework.handle_explicit_pydantic_error,
+    fastapi_rest_framework.explicit_pydantic_error_handler,
 )

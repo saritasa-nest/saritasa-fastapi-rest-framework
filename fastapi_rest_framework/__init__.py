@@ -2,7 +2,7 @@ import contextlib
 
 from .common_types import ContextType
 from .exception_handlers import (
-    handle_explicit_pydantic_error,
+    explicit_pydantic_error_handler,
     http_exception_handler,
     pydantic_validation_error_exception_handler,
     validation_error_exception_handler,
@@ -146,7 +146,7 @@ __all__ = (
     "FiltersT",
     "GenericError",
     "get_permissions_dependency",
-    "handle_explicit_pydantic_error",
+    "explicit_pydantic_error_handler",
     "http_exception_handler",
     "LazyLoadedT",
     "ListMixin",

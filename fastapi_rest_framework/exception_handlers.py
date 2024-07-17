@@ -76,7 +76,7 @@ async def validation_error_exception_handler(
     )
 
 
-def handle_explicit_pydantic_error(
+def explicit_pydantic_error_handler(
     request: fastapi.Request,
     exc: pydantic.ValidationError,
 ) -> fastapi.responses.JSONResponse:
