@@ -320,3 +320,52 @@ async def test_list_reverse_ordering(
         strict=False,
     ):
         assert actual.id == expected.id
+
+
+async def test_list_invalid_value_in_filter(
+    lazy_url: fastapi_rest_framework.testing.LazyUrl,
+    api_client_factory: shortcuts.AuthApiClientFactory,
+    user_jwt_data: shortcuts.UserData,
+    test_model_list: list[example_app.models.TestModel],
+) -> None:
+    """Test handling of invalid value in filter."""
+    response = await api_client_factory(user_jwt_data).get(
+        lazy_url(action_name="list"),
+        params={
+            "is_boolean_condition_true": "invalid",
+        },
+    )
+    response_data = fastapi_rest_framework.testing.extract_error_from_response(
+        response=response,
+        field="query.is_boolean_condition_true",
+    )
+    assert (
+        response_data.detail
+        == "Input should be a valid boolean, unable to interpret input"
+    ), response_data
+
+
+async def test_list_invalid_value_in_filter_body(
+    lazy_url: fastapi_rest_framework.testing.LazyUrl,
+    api_client_factory: shortcuts.AuthApiClientFactory,
+    user_jwt_data: shortcuts.UserData,
+    test_model_list: list[example_app.models.TestModel],
+) -> None:
+    """Test handling of invalid value in filter's body.
+
+    Test that we correctly handle validation error if it's happen in whole
+    model validation method.
+
+    """
+    response = await api_client_factory(user_jwt_data).get(
+        lazy_url(action_name="list"),
+        params={"search": "invalid", "is_boolean_condition_true": True},
+    )
+    response_data = fastapi_rest_framework.testing.extract_error_from_response(
+        response=response,
+        field="query",
+    )
+    assert (
+        response_data.detail
+        == "Value error, Invalid can't be used with condition"
+    ), response_data

@@ -1,4 +1,5 @@
 import fastapi
+import pydantic
 
 import fastapi_rest_framework
 
@@ -32,4 +33,7 @@ fastapi_app.exception_handler(fastapi_rest_framework.ValidationError)(
 )
 fastapi_app.exception_handler(fastapi.exceptions.RequestValidationError)(
     fastapi_rest_framework.pydantic_validation_error_exception_handler,
+)
+fastapi_app.exception_handler(pydantic.ValidationError)(
+    fastapi_rest_framework.handle_explicit_pydantic_error,
 )

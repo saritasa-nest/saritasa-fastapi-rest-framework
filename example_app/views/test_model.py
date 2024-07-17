@@ -58,6 +58,13 @@ class Filters(core.Filters[repositories.TestModelRepository.model]):
             model.boolean.is_(False),
         )
 
+    @pydantic.model_validator(mode="after")
+    def validate_filter(self) -> typing.Self:
+        """Validate."""
+        if self.search == "invalid" and self.is_boolean_condition_true:
+            raise ValueError("Invalid can't be used with condition")
+        return self
+
 
 class TestModelAPIView(
     core.DeleteMixin[
