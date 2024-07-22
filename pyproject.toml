@@ -82,15 +82,15 @@ saritasa_invocations = "^1.1.1"
 # Uvicorn is an ASGI web server implementation for Python.
 # Used for launching example app
 # https://www.uvicorn.org/
-uvicorn = "^0.30.1"
+uvicorn = "^0.30.3"
 
 [tool.poetry.group.linters.dependencies]
 # Mypy is a static type checker for Python.
 # https://mypy.readthedocs.io/en/stable/
-mypy = "^1.10.1"
+mypy = "^1.11.0"
 
 [tool.poetry.group.test.dependencies]
-pytest = "^8.2.2"
+pytest = "^8.3.1"
 # To prettify pytest output
 pytest-sugar = "^1.0.0"
 # Coverage.py is a tool for measuring code coverage of Python programs.
@@ -100,7 +100,7 @@ pytest-sugar = "^1.0.0"
 coverage = "^7.6.0"
 # Allows you to use fixtures in @pytest.mark.parametrize.
 # https://pypi.org/project/pytest-lazy-fixtures/
-pytest-lazy-fixtures = "^1.0.7"
+pytest-lazy-fixtures = "^1.1.0"
 # asyncpg is a database interface library designed specifically for PostgreSQL
 # and Python/asyncio.
 # https://magicstack.github.io/asyncpg/current/
