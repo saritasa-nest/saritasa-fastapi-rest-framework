@@ -1,4 +1,5 @@
 import pytest
+import pytest_lazy_fixtures
 import saritasa_sqlalchemy_tools
 
 import example_app
@@ -11,7 +12,7 @@ from . import factories, shortcuts
     "user",
     [
         None,
-        pytest.lazy_fixtures("user_jwt_data"),
+        pytest_lazy_fixtures.lf("user_jwt_data"),
     ],
 )
 async def test_list_api(

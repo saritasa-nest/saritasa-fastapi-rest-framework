@@ -2,6 +2,7 @@ import http
 
 import humanize
 import pytest
+import pytest_lazy_fixtures
 import saritasa_s3_tools
 
 import example_app
@@ -19,7 +20,7 @@ def get_s3_params_url() -> str:
     "user",
     [
         None,
-        pytest.lazy_fixtures("user_jwt_data"),
+        pytest_lazy_fixtures.lf("user_jwt_data"),
     ],
 )
 async def test_auth_validation(
@@ -54,7 +55,7 @@ async def test_auth_validation(
     "user",
     [
         None,
-        pytest.lazy_fixtures("user_jwt_data"),
+        pytest_lazy_fixtures.lf("user_jwt_data"),
     ],
 )
 async def test_anon_auth_validation(
@@ -143,7 +144,7 @@ async def test_content_type_validation(
     "user",
     [
         None,
-        pytest.lazy_fixtures("user_jwt_data"),
+        pytest_lazy_fixtures.lf("user_jwt_data"),
     ],
 )
 async def test_all_files_allowed_validation(
@@ -172,7 +173,7 @@ async def test_all_files_allowed_validation(
     "user",
     [
         None,
-        pytest.lazy_fixtures("user_jwt_data"),
+        pytest_lazy_fixtures.lf("user_jwt_data"),
     ],
 )
 async def test_all_file_sizes_allowed_validation(

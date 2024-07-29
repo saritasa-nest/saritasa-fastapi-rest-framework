@@ -1,4 +1,5 @@
 import pytest
+import pytest_lazy_fixtures
 
 import example_app
 import fastapi_rest_framework
@@ -10,7 +11,7 @@ from . import shortcuts
     "user",
     [
         None,
-        pytest.lazy_fixtures("user_jwt_data"),
+        pytest_lazy_fixtures.lf("user_jwt_data"),
     ],
 )
 async def test_detail_api(
@@ -42,7 +43,7 @@ async def test_detail_api(
     "user",
     [
         None,
-        pytest.lazy_fixtures("user_jwt_data"),
+        pytest_lazy_fixtures.lf("user_jwt_data"),
     ],
 )
 async def test_detail_api_not_found(
