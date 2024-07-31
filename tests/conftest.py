@@ -1,4 +1,5 @@
 import collections.abc
+import contextlib
 import functools
 
 import fastapi
@@ -103,9 +104,10 @@ def token_factory() -> collections.abc.Callable[[shortcuts.UserData], str]:
 @pytest.fixture
 def db_session_dependency(
     db_session: saritasa_sqlalchemy_tools.Session,
-) -> saritasa_sqlalchemy_tools.SessionFactory:
+) -> saritasa_sqlalchemy_tools.SessionContextManagerGetter:
     """Prepare db session dependency override."""
 
+    @contextlib.asynccontextmanager
     async def _get_db_override() -> (
         collections.abc.AsyncIterator[saritasa_sqlalchemy_tools.Session,]
     ):
@@ -117,12 +119,12 @@ def db_session_dependency(
 @pytest.fixture
 def fastapi_app(
     fastapi_app: fastapi.FastAPI,
-    db_session_dependency: saritasa_sqlalchemy_tools.SessionFactory,
+    db_session: saritasa_sqlalchemy_tools.Session,
     async_s3_client: saritasa_s3_tools.AsyncS3Client,
 ) -> fastapi.FastAPI:
     """Override app dependencies."""
     fastapi_app.dependency_overrides[example_app.db.get_db_session] = (
-        db_session_dependency
+        lambda: db_session
     )
     fastapi_app.dependency_overrides[
         example_app.dependencies.get_s3_client
