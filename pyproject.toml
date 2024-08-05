@@ -82,7 +82,7 @@ saritasa_invocations = "^1.1.1"
 # Uvicorn is an ASGI web server implementation for Python.
 # Used for launching example app
 # https://www.uvicorn.org/
-uvicorn = "^0.30.3"
+uvicorn = "^0.30.5"
 
 [tool.poetry.group.linters.dependencies]
 # Mypy is a static type checker for Python.
@@ -97,7 +97,7 @@ pytest-sugar = "^1.0.0"
 # It monitors your program, noting which parts of the code have been executed,
 # then analyzes the source to identify code that could have been executed but was not.
 # https://coverage.readthedocs.io/en/latest/
-coverage = "^7.6.0"
+coverage = "^7.6.1"
 # Allows you to use fixtures in @pytest.mark.parametrize.
 # https://pypi.org/project/pytest-lazy-fixtures/
 pytest-lazy-fixtures = "^1.0.7"
