@@ -1032,13 +1032,13 @@ trio = ["trio (>=0.22.0,<0.26.0)"]
 
 [[package]]
 name = "httpx"
-version = "0.27.0"
+version = "0.27.2"
 description = "The next generation HTTP client."
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "httpx-0.27.0-py3-none-any.whl", hash = "sha256:71d5465162c13681bff01ad59b2cc68dd838ea1f10e51574bac27103f00c91a5"},
-    {file = "httpx-0.27.0.tar.gz", hash = "sha256:a0cb88a46f32dc874e04ee956e4c2764aba2aa228f650b06788ba6bda2962ab5"},
+    {file = "httpx-0.27.2-py3-none-any.whl", hash = "sha256:7bb2708e112d8fdd7829cd4243970f0c223274051cb35ee80c03301ee29a3df0"},
+    {file = "httpx-0.27.2.tar.gz", hash = "sha256:f7c2be1d2f3c3c3160d441802406b206c2b76f5947b11115e6df10c6c65e66c2"},
 ]
 
 [package.dependencies]
@@ -1053,6 +1053,7 @@ brotli = ["brotli", "brotlicffi"]
 cli = ["click (==8.*)", "pygments (==2.*)", "rich (>=10,<14)"]
 http2 = ["h2 (>=3,<5)"]
 socks = ["socksio (==1.*)"]
+zstd = ["zstandard (>=0.18.0)"]
 
 [[package]]
 name = "humanize"
@@ -1132,13 +1133,13 @@ ipython = {version = ">=7.31.1", markers = "python_version >= \"3.11\""}
 
 [[package]]
 name = "ipython"
-version = "8.26.0"
+version = "8.27.0"
 description = "IPython: Productive Interactive Computing"
 optional = false
 python-versions = ">=3.10"
 files = [
-    {file = "ipython-8.26.0-py3-none-any.whl", hash = "sha256:e6b347c27bdf9c32ee9d31ae85defc525755a1869f14057e900675b9e8d6e6ff"},
-    {file = "ipython-8.26.0.tar.gz", hash = "sha256:1cec0fbba8404af13facebe83d04436a7434c7400e59f47acf467c64abd0956c"},
+    {file = "ipython-8.27.0-py3-none-any.whl", hash = "sha256:f68b3cb8bde357a5d7adc9598d57e22a45dfbea19eb6b98286fa3b288c9cd55c"},
+    {file = "ipython-8.27.0.tar.gz", hash = "sha256:0b99a2dc9f15fd68692e898e5568725c6d49c527d36a9fb5960ffbdeaa82ff7e"},
 ]
 
 [package.dependencies]
@@ -1918,16 +1919,16 @@ factory-boy = {version = "<4", optional = true}
 pillow = {version = "<11", optional = true}
 
 [package.extras]
-all = ["anyio (<5)", "factory-boy (<4)", "httpx (>=0.27.0,<0.28.0)", "pillow (<11)"]
+all = ["anyio (<5)", "factory-boy (<4)", "httpx (>=0.27.2,<0.28.0)", "pillow (<11)"]
 async = ["anyio (<5)"]
 factory = ["factory-boy (<4)", "pillow (<11)"]
-testing = ["httpx (>=0.27.0,<0.28.0)"]
+testing = ["httpx (>=0.27.2,<0.28.0)"]
 
 [package.source]
 type = "git"
 url = "https://github.com/saritasa-nest/saritasa-s3-tools.git"
 reference = "main"
-resolved_reference = "3965811df2ccb3605c09bc58ae84a603acd31694"
+resolved_reference = "22b2c90e609d372cebdce59d5c1bfb97800530bd"
 
 [[package]]
 name = "saritasa-sqlalchemy-tools"
@@ -1952,7 +1953,7 @@ testing = ["anyio (<5)"]
 type = "git"
 url = "https://github.com/saritasa-nest/saritasa-sqlalchemy-tools.git"
 reference = "main"
-resolved_reference = "1e2c27e7a81f1d826aa96bb3010913c8dcfe7b03"
+resolved_reference = "f1d5f99981c40bc92259a4671fb006d56c9d364f"
 
 [[package]]
 name = "sentry-sdk"
@@ -2288,4 +2289,4 @@ sentry = ["sentry-sdk"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "bd21c71c7862a52a4b6452dca522eda0ffc1785dffbe6cdb9a51a6919f512d23"
+content-hash = "32ef648011761a4c06ad2966d63fb66165919bb5eb8e519598f0739f4ed1425c"
