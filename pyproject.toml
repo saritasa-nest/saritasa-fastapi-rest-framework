@@ -78,7 +78,7 @@ pre-commit = "^3.8.0"
 # drawing inspiration from various sources to arrive at a powerful & clean feature set.
 # http://www.pyinvoke.org/
 # https://github.com/saritasa-nest/saritasa-python-invocations/
-saritasa_invocations = "^1.2.1"
+saritasa_invocations = "^1.2.3"
 # Uvicorn is an ASGI web server implementation for Python.
 # Used for launching example app
 # https://www.uvicorn.org/

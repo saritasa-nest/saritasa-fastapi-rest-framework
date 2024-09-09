@@ -893,13 +893,13 @@ python-dateutil = ">=2.4"
 
 [[package]]
 name = "fastapi"
-version = "0.112.2"
+version = "0.114.0"
 description = "FastAPI framework, high performance, easy to learn, fast to code, ready for production"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "fastapi-0.112.2-py3-none-any.whl", hash = "sha256:db84b470bd0e2b1075942231e90e3577e12a903c4dc8696f0d206a7904a7af1c"},
-    {file = "fastapi-0.112.2.tar.gz", hash = "sha256:3d4729c038414d5193840706907a41839d839523da6ed0c2811f1168cac1798c"},
+    {file = "fastapi-0.114.0-py3-none-any.whl", hash = "sha256:fee75aa1b1d3d73f79851c432497e4394e413e1dece6234f68d3ce250d12760a"},
+    {file = "fastapi-0.114.0.tar.gz", hash = "sha256:9908f2a5cc733004de6ca5e1412698f35085cefcbfd41d539245b9edf87b73c1"},
 ]
 
 [package.dependencies]
@@ -1886,13 +1886,13 @@ crt = ["botocore[crt] (>=1.33.2,<2.0a.0)"]
 
 [[package]]
 name = "saritasa-invocations"
-version = "1.2.1"
+version = "1.2.3"
 description = "Collection of invoke commands used by Saritasa"
 optional = false
 python-versions = "<4.0,>=3.10"
 files = [
-    {file = "saritasa_invocations-1.2.1-py3-none-any.whl", hash = "sha256:1bc1cf01b6bb97f083535e27ae8d837907fc34f7ffc6f5d4469e422c0d40828b"},
-    {file = "saritasa_invocations-1.2.1.tar.gz", hash = "sha256:057e1df32e1e4cd357f7271c586e259cf871f6f46a07f07b8570bf3f42552634"},
+    {file = "saritasa_invocations-1.2.3-py3-none-any.whl", hash = "sha256:83d649b7d7eb4dc14faa484632d5780ace0d992fda0c0571fecfabb765864c70"},
+    {file = "saritasa_invocations-1.2.3.tar.gz", hash = "sha256:43059dbe477079eeee14f18f317ba81923790c8beee34f84db2b68eef4d7e16b"},
 ]
 
 [package.dependencies]
@@ -1919,16 +1919,18 @@ factory-boy = {version = "<4", optional = true}
 pillow = {version = "<11", optional = true}
 
 [package.extras]
-all = ["anyio (<5)", "factory-boy (<4)", "httpx (>=0.27.2,<0.28.0)", "pillow (<11)"]
+all = ["anyio (<5)", "django (<6)", "django-storages[boto3] (<2)", "djangorestframework (<4)", "drf-spectacular (<1)", "factory-boy (<4)", "httpx (<1)", "humanize (<5)", "pillow (<11)"]
 async = ["anyio (<5)"]
+django = ["django (<6)", "django-storages[boto3] (<2)", "djangorestframework (<4)", "humanize (<5)"]
+django-openapi = ["drf-spectacular (<1)"]
 factory = ["factory-boy (<4)", "pillow (<11)"]
-testing = ["httpx (>=0.27.2,<0.28.0)"]
+testing = ["httpx (<1)"]
 
 [package.source]
 type = "git"
 url = "https://github.com/saritasa-nest/saritasa-s3-tools.git"
 reference = "main"
-resolved_reference = "22b2c90e609d372cebdce59d5c1bfb97800530bd"
+resolved_reference = "f817caa8b2a9fd0c7b864f64f6ffd2ade55b7e89"
 
 [[package]]
 name = "saritasa-sqlalchemy-tools"
@@ -1953,7 +1955,7 @@ testing = ["anyio (<5)"]
 type = "git"
 url = "https://github.com/saritasa-nest/saritasa-sqlalchemy-tools.git"
 reference = "main"
-resolved_reference = "f1d5f99981c40bc92259a4671fb006d56c9d364f"
+resolved_reference = "382a8fa8c6d04eb5e91c9b96761526eb55e26d3f"
 
 [[package]]
 name = "sentry-sdk"
@@ -2289,4 +2291,4 @@ sentry = ["sentry-sdk"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "32ef648011761a4c06ad2966d63fb66165919bb5eb8e519598f0739f4ed1425c"
+content-hash = "500790df53518e31d776847eeed0c8b558d832bbb85f98901c1f20413ebb16ca"
