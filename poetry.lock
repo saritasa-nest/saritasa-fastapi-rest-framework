@@ -1930,7 +1930,7 @@ testing = ["httpx (<1)"]
 type = "git"
 url = "https://github.com/saritasa-nest/saritasa-s3-tools.git"
 reference = "main"
-resolved_reference = "81ffcf24ebd31d156a20d28104e80a67e7b228d8"
+resolved_reference = "77f853d2c81508367021b2a64a19481c8b11c34b"
 
 [[package]]
 name = "saritasa-sqlalchemy-tools"
@@ -1955,7 +1955,7 @@ testing = ["anyio (<5)"]
 type = "git"
 url = "https://github.com/saritasa-nest/saritasa-sqlalchemy-tools.git"
 reference = "main"
-resolved_reference = "554bff1f723601452ca951cdc6633efb6f02873d"
+resolved_reference = "788f0289d88196788f4f17beab81fcacecd6056c"
 
 [[package]]
 name = "sentry-sdk"
@@ -2235,13 +2235,13 @@ zstd = ["zstandard (>=0.18.0)"]
 
 [[package]]
 name = "uvicorn"
-version = "0.30.6"
+version = "0.31.0"
 description = "The lightning-fast ASGI server."
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "uvicorn-0.30.6-py3-none-any.whl", hash = "sha256:65fd46fe3fda5bdc1b03b94eb634923ff18cd35b2f084813ea79d1f103f711b5"},
-    {file = "uvicorn-0.30.6.tar.gz", hash = "sha256:4b15decdda1e72be08209e860a1e10e92439ad5b97cf44cc945fcbee66fc5788"},
+    {file = "uvicorn-0.31.0-py3-none-any.whl", hash = "sha256:cac7be4dd4d891c363cd942160a7b02e69150dcbc7a36be04d5f4af4b17c8ced"},
+    {file = "uvicorn-0.31.0.tar.gz", hash = "sha256:13bc21373d103859f68fe739608e2eb054a816dea79189bc3ca08ea89a275906"},
 ]
 
 [package.dependencies]
@@ -2291,4 +2291,4 @@ sentry = ["sentry-sdk"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "7a0b7920dd2b5c3c71df81d3cff1cb5c436aafa2d8e1291bd997fbc1e27cf446"
+content-hash = "0b8451f530f409341322ae8589624e14f40cb469c48f865f0b5ac5afe8bfaed0"
